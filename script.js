@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://yodtlxkxtynvwcnkenhh.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_yzxj6bfR3MqckqGnxGV0kg_NjA4vsT_";
+const SUPABASE_ANON_KEY = "sb_publishable_yzxj6bfR3MqckqGnxGV0kg_NjA4vsT";
 
 document.addEventListener("DOMContentLoaded", () => {
     const yearEl = document.getElementById("year");
