@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#111114">
-    <title>DareCraft — DARENACHEK studio</title>
-    <meta name="description" content="Официальный сайт DareCraft от DARENACHEK studio. Твой мир. Твои правила.">
+    <title>DareCraft поддержка — DARENACHEK studio</title>
+    <meta name="description" content="Официальный сайт поддержки DareCraft от DARENACHEK studio. Сообщить о баге, посмотреть отчёты игроков и задать вопрос.">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         .lang-select {
             padding: 6px 12px;
@@ -42,6 +43,66 @@
                 width: fit-content;
             }
         }
+        .community-card {
+            background: #18181d;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .community-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .community-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(230, 57, 70, 0.16);
+            color: #ff6b6b;
+            border: 1px solid rgba(230, 57, 70, 0.35);
+        }
+        .community-tag.is-idea {
+            background: rgba(0, 120, 215, 0.16);
+            color: #5cb3ff;
+            border-color: rgba(0, 120, 215, 0.35);
+        }
+        .community-meta {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .community-text {
+            color: #f3f4f6;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .community-steps {
+            font-size: 13px;
+            color: #9ca3af;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 10px;
+            border-radius: 6px;
+            border-left: 2px solid #0078d7;
+            white-space: pre-wrap;
+        }
+        .community-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 32px;
+            color: #9ca3af;
+            background: #18181d;
+            border-radius: 10px;
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+        }
     </style>
 </head>
 <body>
@@ -49,22 +110,20 @@
     <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
     <header class="header" id="header">
-        <a href="#home" class="logo">
+        <a href="#top" class="logo">
             <span class="logo-main">DARE<span>CRAFT</span></span>
-            <span class="logo-sub">BY DARENACHEK</span>
+            <span class="logo-sub" data-i18n="logo_sub">ПОДДЕРЖКА · DARENACHEK</span>
         </a>
 
         <button class="menu-toggle" id="menuToggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="navigation">
             <span class="menu-lines" aria-hidden="true"></span>
         </button>
 
-        <nav class="navigation" id="navigation" aria-label="Основная навигация">
-            <a href="#home" class="nav-link active" data-i18n="nav_home">ГЛАВНАЯ</a>
-            <a href="#about" class="nav-link" data-i18n="nav_about">ОБ ИГРЕ</a>
-            <a href="#features" class="nav-link" data-i18n="nav_features">ВОЗМОЖНОСТИ</a>
-            <a href="#updates" class="nav-link" data-i18n="nav_updates">ОБНОВЛЕНИЯ</a>
-            <a href="#gallery" class="nav-link" data-i18n="nav_gallery">ГАЛЕРЕЯ</a>
-            <a href="#download" class="nav-link nav-download" data-i18n="nav_download">СКАЧАТЬ</a>
+        <nav class="navigation" id="navigation" aria-label="Навигация поддержки">
+            <a href="#report" class="nav-link active" data-i18n="nav_report">СООБЩИТЬ О БАГЕ</a>
+            <a href="#community-bugs" class="nav-link" data-i18n="nav_community">БАГИ ПОЛЬЗОВАТЕЛЕЙ</a>
+            <a href="#faq" class="nav-link" data-i18n="nav_faq">ЧАСТЫЕ ВОПРОСЫ</a>
+            <a href="https://darenachek-create.github.io/DareCraft/" class="nav-link nav-download" data-i18n="nav_main_site">САЙТ ИГРЫ ↗</a>
             <select id="lang-select" class="lang-select" aria-label="Выбор языка">
                 <option value="uk">Українська</option>
                 <option value="en">English</option>
@@ -73,478 +132,635 @@
         </nav>
     </header>
 
-    <main>
-        <section class="hero" id="home">
-            <div class="hero-content">
+    <main id="top">
+        <section class="support-hero">
+            <div class="support-hero-inner">
+                <a href="https://darenachek-create.github.io/DareCraft/" class="back-pill" data-i18n="back_pill">← Перейти на главный сайт DareCraft</a>
                 <div class="status" role="status">
                     <span class="status-dot" aria-hidden="true"></span>
-                    <span data-i18n="hero_status">САЙТ И ИГРА В РАЗРАБОТКЕ — МОГУТ БЫТЬ БАГИ. ЕСЛИ УВИДИТЕ, НАПИШІТЕ В ПОДДЕРЖКУ. СПАСИБО!</span>
+                    <span data-i18n="hero_status">ЦЕНТР ПОДДЕРЖКИ DARECRAFT · ПОМОГАЕМ СДЕЛАТЬ ИГРУ ЛУЧШЕ</span>
                 </div>
-
-                <h1>YOUR WORLD.<br><span>YOUR RULES.</span></h1>
-
-                <p class="hero-lead" data-i18n="hero_lead">
-                    Исследуй бесконечные просторы, строй собственный мир
-                    и отправляйся навстречу приключениям.
-                    Всё это ждёт тебя в DareCraft.
+                <h1 data-i18n-html="hero_title">DARECRAFT <span>ПОДДЕРЖКА</span></h1>
+                <p data-i18n-html="hero_desc">
+                    Нашли баг в сборке или на сайте, или хотите предложить идею для нового обновления? Заполните форму ниже — ваше обращение сразу появится в общем списке отчётов пользователей для <strong>DARENACHEK studio</strong>, и его смогут увидеть все игроки.
                 </p>
-
-                <div class="hero-buttons">
-                    <a href="#download" class="btn btn-red" data-i18n="hero_btn_download">СКАЧАТЬ ИГРУ ↓</a>
-                    <a href="#gallery" class="btn btn-outline" data-i18n="hero_btn_gallery">ГАЛЕРЕЯ</a>
-                </div>
-
-                <div class="hero-badges">
-                    <span class="badge">PC &amp; MOBILE CONTROLS</span>
-                    <span class="badge">16×16 PIXEL ART</span>
-                    <span class="badge">VERSION 0.1</span>
-                </div>
-
-                <div class="hero-switcher" id="heroSwitcher" role="group" aria-label="Выбор фоновой сцены">
-                    <span class="switcher-label" data-i18n="hero_scene_label">СЦЕНА ФОНА:</span>
-                    <button type="button" class="scene-btn active" data-scene="0" data-i18n="hero_scene_0">Закат и стройка</button>
-                    <button type="button" class="scene-btn" data-scene="1" data-i18n="hero_scene_1">Ночная битва</button>
-                </div>
-
-                <div class="hero-signature">
-                    AN ORIGINAL GAME BY <strong>DARENACHEK STUDIO</strong>
-                </div>
             </div>
         </section>
 
-        <section class="section about reveal" id="about">
-            <div class="about-image">
-                <img src="assets/studio-bg.png" alt="DARENACHEK studio — мир DareCraft" onerror="this.parentElement.classList.add('is-fallback')">
-                <div class="image-fallback" aria-hidden="true">
-                    <span class="fallback-tag">DARENACHEK STUDIO</span>
-                    <strong>DARECRAFT WORLD</strong>
-                    <small data-i18n-html="about_fallback_hint">Положите свой баннер в <code>assets/studio-bg.png</code></small>
-                </div>
-            </div>
-
-            <div class="about-text">
-                <span class="section-label" data-i18n="about_label">ЗНАКОМЬСЯ С ИГРОЙ</span>
-                <h2>DAREC<span>RAFT</span></h2>
-                <p class="about-tagline" data-i18n-html="about_tagline">
-                    <strong>DARECRAFT</strong> — твой мир. Твои правила. Твоя история.
-                </p>
-                <p data-i18n-html="about_desc">
-                    Добро пожаловать в <strong>DareCraft</strong> — мир, где каждое приключение начинается с одного блока!
-                    Исследуй огромный кубический мир, добывай ценные ресурсы, находи редкие руды и создавай всё необходимое для выживания. Строй собственные дома, обустраивай убежища, открывай новые возможности крафта и превращай обычные блоки в нечто удивительное.
-                </p>
-
-                <ul class="about-list">
-                    <li data-i18n-html="about_li_1"><strong>Исследуй:</strong> открывай новые территории, находи леса, исследуй горы и узнавай, какие секреты скрывает мир DareCraft.</li>
-                    <li data-i18n-html="about_li_2"><strong>Добывай:</strong> ломай блоки, собирай ресурсы, находи уголь и железо.</li>
-                    <li data-i18n-html="about_li_3"><strong>Создавай:</strong> изготавливай инструменты, оружие, броню и полезные предметы на верстаке и в печке.</li>
-                    <li data-i18n-html="about_li_4"><strong>Строй:</strong> возводи собственные постройки и превращай пустое пространство в дом.</li>
-                    <li data-i18n-html="about_li_5"><strong>Развивайся:</strong> выращивай урожай, храни ресурсы в сундуках и создавай свой собственный мир.</li>
-                </ul>
-
-                <div class="dev-callout" data-i18n-html="about_callout">
-                    <strong>СТРУКТУРЫ УЖЕ В РАЗРАБОТКЕ!</strong> В будущих обновлениях DareCraft появятся новые структуры, которые сделают исследование мира ещё интереснее. Следи за обновлениями!
-                </div>
-
-                <p class="about-credit">
-                    <strong>DareCraft</strong> — <em>MADE WITH DANYIL · DARENACHEK studio</em>
-                </p>
-                <a href="#features" class="text-link" data-i18n="about_more">УЗНАТЬ БОЛЬШЕ →</a>
-            </div>
-        </section>
-
-        <section class="section features reveal" id="features">
-            <div class="section-header-center">
-                <span class="section-label" data-i18n="features_label">ВОЗМОЖНОСТИ</span>
-                <h2 data-i18n-html="features_title">ТВОЁ <span>ПРИКЛЮЧЕНИЕ</span></h2>
-            </div>
-
-            <div class="feature-grid">
-                <article class="feature-card">
-                    <div class="feature-number">01</div>
-                    <h3 data-i18n="feat_1_title">НОВЫЙ МИР</h3>
-                    <p data-i18n="feat_1_desc">Исследуй процедурно генерируемые локации, леса и горы, открывая новые уголки мира.</p>
-                </article>
-
-                <article class="feature-card">
-                    <div class="feature-number">02</div>
-                    <h3 data-i18n="feat_2_title">КРАФТ И РЕСУРСЫ</h3>
-                    <p data-i18n="feat_2_desc">Добывай руды, пользуйся верстаком, печкой и сундуками, чтобы развивать выживание.</p>
-                </article>
-
-                <article class="feature-card">
-                    <div class="feature-number">03</div>
-                    <h3 data-i18n="feat_3_title">СТРОИТЕЛЬСТВО</h3>
-                    <p data-i18n="feat_3_desc">Создавай собственные постройки, убежища и превращай блоки в готовые миры.</p>
-                </article>
-
-                <article class="feature-card">
-                    <div class="feature-number">04</div>
-                    <h3 data-i18n="feat_4_title">ИССЛЕДОВАНИЕ</h3>
-                    <p data-i18n="feat_4_desc">Отправляйся в путешествие, следи за будущими структурами и находи новые тайны.</p>
-                </article>
-            </div>
-        </section>
-
-        <section class="section updates reveal" id="updates">
-            <div class="section-header-center">
-                <span class="section-label" data-i18n="updates_label">ЖУРНАЛ РАЗРАБОТКИ</span>
-                <h2 data-i18n-html="updates_title">ОБНОВЛЕНИЯ <span>DARECRAFT</span></h2>
-            </div>
-
-            <div class="updates-grid">
-                <article class="update-card is-current">
-                    <div class="update-top">
-                        <span class="update-version" data-i18n="upd_1_ver">v0.1 · АКТУАЛЬНАЯ</span>
-                        <span class="update-status live" data-i18n="upd_1_status">ДОСТУПНА</span>
-                    </div>
-                    <h3 data-i18n="upd_1_title">Старт мира и базовое выживание</h3>
-                    <ul>
-                        <li data-i18n="upd_1_li_1">Процедурная генерация мира и 16×16 пиксельные текстуры</li>
-                        <li data-i18n="upd_1_li_2">Разрушение и установка блоков, добыча угля и железа</li>
-                        <li data-i18n="upd_1_li_3">Система крафта: верстак, печка, сундуки и базовые предметы</li>
-                        <li data-i18n="upd_1_li_4">Поддержка управления на ПК и мобильных экранах</li>
-                    </ul>
-                </article>
-
-                <article class="update-card">
-                    <div class="update-top">
-                        <span class="update-version" data-i18n="upd_2_ver">v0.2 · СКОРО</span>
-                        <span class="update-status wip" data-i18n="upd_2_status">В РАЗРАБОТКЕ</span>
-                    </div>
-                    <h3 data-i18n="upd_2_title">Новые структуры и расширение мира</h3>
-                    <ul>
-                        <li data-i18n="upd_2_li_1">Генерация построек и тайников для исследования</li>
-                        <li data-i18n="upd_2_li_2">Новые виды противников и ночные испытания</li>
-                        <li data-i18n="upd_2_li_3">Доработка баланса крафта, инвентаря и оптимизации</li>
-                    </ul>
-                </article>
-            </div>
-        </section>
-
-        <section class="section gallery reveal" id="gallery">
-            <div class="section-header-center">
-                <span class="section-label" data-i18n="gallery_label">МИР DARECRAFT</span>
-                <h2 data-i18n-html="gallery_title">ГАЛЕРЕЯ <span>ИГРЫ</span></h2>
-            </div>
-
-            <div class="gallery-filters" role="group" aria-label="Фильтр скриншотов">
-                <button type="button" class="filter-btn active" data-filter="all" data-i18n="gal_filter_all">Все</button>
-                <button type="button" class="filter-btn" data-filter="crafting" data-i18n="gal_filter_crafting">Стройка и базы</button>
-                <button type="button" class="filter-btn" data-filter="world" data-i18n="gal_filter_world">Битвы и мир</button>
-                <button type="button" class="filter-btn" data-filter="updates" data-i18n="gal_filter_updates">Обновления</button>
-            </div>
-
-            <div class="gallery-grid" id="galleryGrid"></div>
-
-            <p class="gallery-note" data-i18n="gallery_note">
-                Скриншоты из мира DareCraft. Нажми на изображение, чтобы рассмотреть его поближе, или используй стрелки ← / → для переключения.
-            </p>
-        </section>
-
-        <div class="gallery-viewer" id="galleryViewer" aria-hidden="true">
-            <div class="gallery-viewer-backdrop" id="galleryBackdrop"></div>
-
-            <div class="gallery-viewer-content" role="dialog" aria-modal="true" aria-labelledby="galleryViewerCaption">
-                <button class="gallery-viewer-close" id="galleryClose" type="button" aria-label="Закрыть просмотрщик">×</button>
-
-                <button class="gallery-viewer-nav prev" id="galleryPrev" type="button" aria-label="Предыдущий скриншот">‹</button>
-
-                <div class="gallery-viewer-stage">
-                    <img id="galleryViewerImage" src="" alt="Скриншот DareCraft">
-                    <div class="viewer-fallback" id="galleryViewerFallback" aria-hidden="true">
-                        <span id="galleryViewerFallbackTitle" data-i18n="gal_fallback">Скриншот DareCraft</span>
-                        <small id="galleryViewerFallbackPath"></small>
-                    </div>
-                </div>
-
-                <button class="gallery-viewer-nav next" id="galleryNext" type="button" aria-label="Следующий скриншот">›</button>
-
-                <p id="galleryViewerCaption"></p>
-            </div>
-        </div>
-
-        <section class="download reveal" id="download">
-            <span class="section-label" data-i18n="dl_label">СКАЧАТЬ И ПОДДЕРЖКА</span>
-            <h2 data-i18n-html="dl_title">ТВОЁ ПРИКЛЮЧЕНИЕ <span>НАЧНЁТСЯ ЗДЕСЬ</span></h2>
-            <p data-i18n="dl_desc">Скачай актуальную версию DareCraft и попробуй игру сам. Если найдёшь баг — дай знать!</p>
-
-            <div class="download-layout">
-                <div class="release-card">
+        <section class="section support-section" id="report">
+            <div class="support-grid">
+                <div class="support-form-card">
                     <div class="release-meta">
-                        <span class="release-badge">BUILD 0.1</span>
-                        <span class="release-file">DareCraft.zip</span>
+                        <span class="release-badge">TICKET</span>
+                        <span class="release-file" data-i18n="form_tag">НОВОЕ ОБРАЩЕНИЕ</span>
                     </div>
-                    <h3 data-i18n="dl_card_title">Актуальная сборка</h3>
-                    <p data-i18n-html="dl_card_desc">Распакуйте архив <strong>DareCraft.zip</strong> в отдельную папку перед запуском игры.</p>
-                    <a href="assets/downloads/DareCraft.zip" download="DareCraft.zip" class="btn btn-red" id="downloadBtn" data-i18n="dl_btn">
-                        СКАЧАТЬ DARECRAFT (.ZIP)
-                    </a>
-                    <div class="download-feedback" id="downloadFeedback" role="status" aria-live="polite"></div>
+                    <h2 data-i18n="form_title">Оформить обращение</h2>
+                    <p class="support-desc" data-i18n-html="form_desc">
+                        Заполните поля ниже и нажмите <strong>«Отправить»</strong> — обращение сразу опубликуется в разделе <strong>«Баги, которые написали другие пользователи»</strong> для всех.
+                    </p>
+
+                    <form id="supportReportForm" class="bug-form">
+                        <div class="form-row-two">
+                            <div class="form-row">
+                                <label for="ticketAuthor" data-i18n="label_author">Ваш ник (необязательно)</label>
+                                <input type="text" id="ticketAuthor" name="ticketAuthor" data-i18n-placeholder="ph_author" placeholder="Например: Danyil">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="ticketCategory" data-i18n="label_category">Тип обращения</label>
+                                <select id="ticketCategory" name="ticketCategory">
+                                    <option value="Баг в игре" data-i18n="opt_cat_game">Баг в игре</option>
+                                    <option value="Ошибка на сайте" data-i18n="opt_cat_site">Ошибка на сайте</option>
+                                    <option value="Предложение / Идея" data-i18n="opt_cat_idea">Предложение / Идея</option>
+                                    <option value="Вопрос по запуску" data-i18n="opt_cat_launch">Вопрос по запуску</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row-two">
+                            <div class="form-row">
+                                <label for="bugVersion" data-i18n="label_version">Версия сборки</label>
+                                <input type="text" id="bugVersion" name="bugVersion" value="0.1" required>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bugPlatform" data-i18n="label_platform">Устройство</label>
+                                <select id="bugPlatform" name="bugPlatform">
+                                    <option value="ПК (Windows)" data-i18n="opt_plat_pc">ПК (Windows)</option>
+                                    <option value="Телефон / Планшет" data-i18n="opt_plat_mobile">Телефон / Планшет</option>
+                                    <option value="Браузер" data-i18n="opt_plat_browser">Браузер</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="bugWhatHappened" data-i18n="label_what">Опишите проблему или идею</label>
+                            <textarea id="bugWhatHappened" name="bugWhatHappened" rows="3" data-i18n-placeholder="ph_what" placeholder="Например: Ошибка в текстурах — они прозрачные..." required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="bugSteps" data-i18n="label_steps">Как повторить (если это баг)</label>
+                            <textarea id="bugSteps" name="bugSteps" rows="2" data-i18n-placeholder="ph_steps" placeholder="Например: Просто зайти в мир"></textarea>
+                        </div>
+
+                        <div class="card-actions">
+                            <button type="submit" class="btn btn-red" id="submitReportBtn" data-i18n="btn_submit">ОТПРАВИТЬ</button>
+                            <button type="button" class="btn btn-outline" id="downloadReportBtn" data-i18n="btn_txt">СКАЧАТЬ .TXT</button>
+                            <button type="button" class="btn btn-outline" id="fillSampleBtn" data-i18n="btn_sample">ПРИМЕР</button>
+                        </div>
+
+                        <div class="download-feedback" id="supportFeedback" role="status" aria-live="polite"></div>
+                    </form>
                 </div>
 
-                <div class="bug-card">
+                <aside class="support-side-card">
                     <div class="release-meta">
-                        <span class="release-badge outline">BUG REPORT</span>
-                        <span class="release-file" data-i18n="bug_card_tag">ПОМОЩЬ РАЗРАБОТКЕ</span>
+                        <span class="release-badge outline" id="ticketIdBadge">#DC-001</span>
+                        <span class="release-file" data-i18n="preview_tag">ПРЕДПРОСМОТР</span>
                     </div>
-                    <h3 data-i18n="bug_card_title">Нашли баг?</h3>
-                    <p data-i18n="bug_card_desc">Перейдите на сайт поддержки напишите ошибку или баг или же идею заполните квитанцию.</p>
-                    <a href="https://darenachek-create.github.io/DareCraft-support/" class="btn btn-outline" id="supportLinkBtn" data-i18n="bug_btn">ПЕРЕЙТИ НА САЙТ ПОДДЕРЖКИ ↗</a>
-                    <div class="download-feedback" id="bugFeedback" role="status" aria-live="polite"></div>
+                    <h3 data-i18n="preview_title">Карточка отчёта</h3>
+                    <pre class="report-preview" id="reportPreview"></pre>
+                    <p class="support-note" data-i18n-html="preview_note">
+                        После нажатия <strong>«Отправить»</strong> карточка сохранится в общую базу и появится ниже в ленте обращений для всех игроков.
+                    </p>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section community-section" id="community-bugs">
+            <div class="section-header-center">
+                <span class="section-label" data-i18n="comm_label">ЛЕНТА СООБЩЕСТВА</span>
+                <h2 data-i18n-html="comm_title">БАГИ, КОТОРЫЕ НАПИСАЛИ <span>ДРУГИЕ ПОЛЬЗОВАТЕЛИ</span></h2>
+                <p class="section-subtitle" data-i18n="comm_subtitle">Общий список обращений и найденных ошибок от всех игроков.</p>
+            </div>
+
+            <div class="community-toolbar">
+                <div class="filter-pills" role="group" aria-label="Фильтр обращений">
+                    <button type="button" class="pill-btn active" data-filter="all"><span data-i18n="filter_all">Все</span> (<span id="countAll">0</span>)</button>
+                    <button type="button" class="pill-btn" data-filter="Баг в игре" data-i18n="filter_game">Баги в игре</button>
+                    <button type="button" class="pill-btn" data-filter="Ошибка на сайте" data-i18n="filter_site">Ошибка на сайте</button>
+                    <button type="button" class="pill-btn" data-filter="Предложение / Идея" data-i18n="filter_idea">Идеи</button>
                 </div>
+            </div>
+
+            <div class="community-grid" id="communityGrid"></div>
+        </section>
+
+        <section class="section faq-section" id="faq">
+            <div class="section-header-center">
+                <span class="section-label" data-i18n="faq_label">ПОМОЩЬ И ОТВЕТЫ</span>
+                <h2 data-i18n-html="faq_title">ЧАСТЫЕ <span>ВОПРОСЫ</span></h2>
+            </div>
+
+            <div class="faq-list">
+                <article class="faq-item">
+                    <h3 data-i18n="faq_1_q">Как правильно запустить скачанную игру DareCraft?</h3>
+                    <p data-i18n="faq_1_a">После скачивания архива с игрой обязательно распакуйте его в отдельную папку и запускайте игру из распакованной папки, а не прямо внутри архива.</p>
+                </article>
+
+                <article class="faq-item">
+                    <h3 data-i18n="faq_2_q">Что делать, если я нашёл баг в версии 0.1?</h3>
+                    <p data-i18n-html="faq_2_a">Опишите, что именно произошло и на каком устройстве (ПК или телефон), нажмите <strong>«Отправить»</strong> — отчёт появится в общем списке багов пользователей и поможет исправить ошибку в следующем обновлении.</p>
+                </article>
+
+                <article class="faq-item">
+                    <h3 data-i18n="faq_3_q">Можно ли предложить свою идею для DareCraft?</h3>
+                    <p data-i18n-html="faq_3_a">Да! Выберите в форме выше тип обращения <strong>«Предложение / Идея»</strong>, опишите новую механику, блок или структуру и отправьте её в общую ленту.</p>
+                </article>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <a href="#home" class="footer-logo">DARENACHEK STUDIO</a>
-        <p>© <span id="year"></span> DARENACHEK studio. DareCraft.</p>
-        <a href="#home" class="footer-top" data-i18n="footer_top">НАВЕРХ ↑</a>
+        <a href="#top" class="footer-logo">DARENACHEK STUDIO</a>
+        <p data-i18n-html="footer_copy">© <span id="year"></span> DARENACHEK studio. DareCraft поддержка.</p>
+        <a href="https://darenachek-create.github.io/DareCraft/" class="footer-top" data-i18n="footer_site">САЙТ DARECRAFT ↗</a>
     </footer>
 
     <script src="script.js"></script>
     <script>
         (function () {
+            // ==========================================
+            // 1. НАСТРОЙКИ SUPABASE
+            // ==========================================
+            const SUPABASE_URL = "https://yodtlxkxtynvwcnkenhh.supabase.co";
+            const SUPABASE_ANON_KEY = "sb_publishable_yzxj6bfR3MqckqGnxGV0kg_NjA4vsT_";
+            const TABLE_NAME = "bug_reports";
+
+            let supabaseClient = null;
+            if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+
+            // ==========================================
+            // 2. ПЕРЕВОДЫ (UK / EN / RU)
+            // ==========================================
             const TRANSLATIONS = {
                 uk: {
-                    meta_desc: "Офіційний сайт DareCraft від DARENACHEK studio. Твій світ. Твої правила.",
-                    nav_home: "ГОЛОВНА",
-                    nav_about: "ПРО ГРУ",
-                    nav_features: "МОЖЛИВОСТІ",
-                    nav_updates: "ОНОВЛЕННЯ",
-                    nav_gallery: "ГАЛЕРЕЯ",
-                    nav_download: "ЗАВАНТАЖИТИ",
-                    hero_status: "САЙТ І ГРА В РОЗРОБЦІ — МОЖУТЬ БУТИ БАГИ. ЯКЩО ПОБАЧИТЕ, НАПИШІТЬ У ПІДТРИМКУ. ДЯКУЄМО!",
-                    hero_lead: "Досліджуй безмежні простори, будуй власний світ і вирушай назустріч пригодам. Усе це чекає на тебе в DareCraft.",
-                    hero_btn_download: "ЗАВАНТАЖИТИ ГРУ ↓",
-                    hero_btn_gallery: "ГАЛЕРЕЯ",
-                    hero_scene_label: "СЦЕНА ФОНУ:",
-                    hero_scene_0: "Захід сонця і будівництво",
-                    hero_scene_1: "Нічна битва",
-                    about_fallback_hint: "Покладіть свій банер у <code>assets/studio-bg.png</code>",
-                    about_label: "ЗНАЙОМСЯ З ГРОЮ",
-                    about_tagline: "<strong>DARECRAFT</strong> — твій світ. Твої правила. Твоя історія.",
-                    about_desc: "Ласкаво просимо до <strong>DareCraft</strong> — світу, де кожна пригода починається з одного блоку! Досліджуй величезний кубічний світ, добувай цінні ресурси, знаходь рідкісні руди та створюй усе необхідне для виживання. Будуй власні будинки, облаштовуй укриття, відкривай нові можливості крафту та перетворюй звичайні блоки на щось дивовижне.",
-                    about_li_1: "<strong>Досліджуй:</strong> відкривай нові території, знаходь ліси, досліджуй гори та дізнавайся, які секрети приховує світ DareCraft.",
-                    about_li_2: "<strong>Добувай:</strong> ламай блоки, збирай ресурси, знаходь вугілля та залізо.",
-                    about_li_3: "<strong>Створюй:</strong> виготовляй інструменти, зброю, броню та корисні предмети на верстаку і в печі.",
-                    about_li_4: "<strong>Будуй:</strong> зводь власні споруди та перетворюй порожній простір на дім.",
-                    about_li_5: "<strong>Розвивайся:</strong> вирощуй урожай, зберігай ресурси у скринях та створюй свій власний світ.",
-                    about_callout: "<strong>СТРУКТУРИ ВЖЕ В РОЗРОБЦІ!</strong> У майбутніх оновленнях DareCraft з’являться нові структури, які зроблять дослідження світу ще цікавішим. Стеж за оновленнями!",
-                    about_more: "ДІЗНАТИСЯ БІЛЬШЕ →",
-                    features_label: "МОЖЛИВОСТІ",
-                    features_title: "ТВОЯ <span>ПРИГОДА</span>",
-                    feat_1_title: "НОВИЙ СВІТ",
-                    feat_1_desc: "Досліджуй процедурно генеровані локації, ліси та гори, відкриваючи нові куточки світу.",
-                    feat_2_title: "КРАФТ І РЕСУРСИ",
-                    feat_2_desc: "Добувай руди, користуйся верстаком, піччю та скринями, щоб розвивати виживання.",
-                    feat_3_title: "БУДІВНИЦТВО",
-                    feat_3_desc: "Створюй власні споруди, укриття та перетворюй блоки на готові світи.",
-                    feat_4_title: "ДОСЛІДЖЕННЯ",
-                    feat_4_desc: "Вирушай у подорож, стеж за майбутніми структурами та знаходь нові таємниці.",
-                    updates_label: "ЖУРНАЛ РОЗРОБКИ",
-                    updates_title: "ОНОВЛЕННЯ <span>DARECRAFT</span>",
-                    upd_1_ver: "v0.1 · АКТУАЛЬНА",
-                    upd_1_status: "ДОСТУПНА",
-                    upd_1_title: "Старт світу та базове виживання",
-                    upd_1_li_1: "Процедурна генерація світу та 16×16 піксельні текстури",
-                    upd_1_li_2: "Руйнування і встановлення блоків, видобуток вугілля та заліза",
-                    upd_1_li_3: "Система крафту: верстак, піч, скрині та базові предмети",
-                    upd_1_li_4: "Підтримка керування на ПК та мобільних екранах",
-                    upd_2_ver: "v0.2 · СКОРО",
-                    upd_2_status: "В РОЗРОБЦІ",
-                    upd_2_title: "Нові структури та розширення світу",
-                    upd_2_li_1: "Генерація споруд і схованок для дослідження",
-                    upd_2_li_2: "Нові види супротивників та нічні випробування",
-                    upd_2_li_3: "Доопрацювання балансу крафту, інвентарю та оптимізації",
-                    gallery_label: "СВІТ DARECRAFT",
-                    gallery_title: "ГАЛЕРЕЯ <span>ГРИ</span>",
-                    gal_filter_all: "Усі",
-                    gal_filter_crafting: "Будівництво і бази",
-                    gal_filter_world: "Битви і світ",
-                    gal_filter_updates: "Оновлення",
-                    gallery_note: "Скріншоти зі світу DareCraft. Натисни на зображення, щоб роздивитися його ближче, або використовуй стрілки ← / → для перемикання.",
-                    gal_fallback: "Скріншот DareCraft",
-                    dl_label: "ЗАВАНТАЖИТИ ТА ПІДТРИМКА",
-                    dl_title: "ТВОЯ ПРИГОДА <span>ПОЧНЕТЬСЯ ТУТ</span>",
-                    dl_desc: "Завантаж актуальну версію DareCraft і спробуй гру сам. Якщо знайдеш баг — дай знати!",
-                    dl_card_title: "Актуальна збірка",
-                    dl_card_desc: "Розпакуйте архів <strong>DareCraft.zip</strong> в окрему папку перед запуском гри.",
-                    dl_btn: "ЗАВАНТАЖИТИ DARECRAFT (.ZIP)",
-                    bug_card_tag: "ДОПОМОГА РОЗРОБЦІ",
-                    bug_card_title: "Знайшли баг?",
-                    bug_card_desc: "Перейдіть на сайт підтримки, напишіть помилку або баг чи ідею та заповніть квитанцію.",
-                    bug_btn: "ПЕРЕЙТИ НА САЙТ ПІДТРИМКИ ↗",
-                    footer_top: "НАГОРУ ↑"
+                    page_title: "DareCraft підтримка — DARENACHEK studio",
+                    meta_desc: "Офіційний сайт підтримки DareCraft від DARENACHEK studio. Повідомити про баг, переглянути звіти гравців та поставити запитання.",
+                    logo_sub: "ПІДТРИМКА · DARENACHEK",
+                    nav_report: "ПОВІДОМИТИ ПРО БАГ",
+                    nav_community: "БАГИ КОРИСТУВАЧІВ",
+                    nav_faq: "ЧАСТІ ЗАПИТАННЯ",
+                    nav_main_site: "САЙТ ГРИ ↗",
+                    back_pill: "← Перейти на головний сайт DareCraft",
+                    hero_status: "ЦЕНТР ПІДТРИМКИ DARECRAFT · ДОПОМАГАЄМО ЗРОБИТИ ГРУ КРАЩОЮ",
+                    hero_title: "DARECRAFT <span>ПІДТРИМКА</span>",
+                    hero_desc: "Знайшли баг у збірці чи на сайті або хочете запропонувати ідею для нового оновлення? Заповніть форму нижче — ваше звернення одразу з'явиться у загальному списку звітів користувачів для <strong>DARENACHEK studio</strong>, і його зможуть побачити всі гравці.",
+                    form_tag: "НОВЕ ЗВЕРНЕННЯ",
+                    form_title: "Оформити звернення",
+                    form_desc: "Заповніть поля нижче та натисніть <strong>«Надіслати»</strong> — звернення одразу опублікується у розділі <strong>«Баги, які написали інші користувачі»</strong> для всіх.",
+                    label_author: "Ваш нік (необов'язково)",
+                    ph_author: "Наприклад: Danyil",
+                    label_category: "Тип звернення",
+                    opt_cat_game: "Баг у грі",
+                    opt_cat_site: "Помилка на сайті",
+                    opt_cat_idea: "Пропозиція / Ідея",
+                    opt_cat_launch: "Питання щодо запуску",
+                    label_version: "Версія збірки",
+                    label_platform: "Пристрій",
+                    opt_plat_pc: "ПК (Windows)",
+                    opt_plat_mobile: "Телефон / Планшет",
+                    opt_plat_browser: "Браузер",
+                    label_what: "Опишіть проблему або ідею",
+                    ph_what: "Наприклад: Помилка в текстурах — вони прозорі...",
+                    label_steps: "Як повторити (якщо це баг)",
+                    ph_steps: "Наприклад: Просто зайти у світ",
+                    btn_submit: "НАДІСЛАТИ",
+                    btn_sending: "НАДСИЛАННЯ...",
+                    btn_txt: "ЗАВАНТАЖИТИ .TXT",
+                    btn_sample: "ПРИКЛАД",
+                    preview_tag: "ПОПЕРЕДНІЙ ПЕРЕГЛЯД",
+                    preview_title: "Картка звіту",
+                    preview_note: "Після натискання <strong>«Надіслати»</strong> картка збережеться у спільну базу та з'явиться нижче у стрічці звернень для всіх гравців.",
+                    comm_label: "СТРІЧКА СПІЛЬНОТИ",
+                    comm_title: "БАГИ, ЯКІ НАПИСАЛИ <span>ІНШІ КОРИСТУВАЧІ</span>",
+                    comm_subtitle: "Загальний список звернень і знайдених помилок від усіх гравців.",
+                    filter_all: "Усі",
+                    filter_game: "Баги у грі",
+                    filter_site: "Помилка на сайті",
+                    filter_idea: "Ідеї",
+                    faq_label: "ДОПОМОГА ТА ВІДПОВІДІ",
+                    faq_title: "ЧАСТІ <span>ЗАПИТАННЯ</span>",
+                    faq_1_q: "Як правильно запустити завантажену гру DareCraft?",
+                    faq_1_a: "Після завантаження архіву з грою обов'язково розпакуйте його в окрему папку і запускайте гру з розпакованої папки, а не прямо всередині архіву.",
+                    faq_2_q: "Що робити, якщо я знайшов баг у версії 0.1?",
+                    faq_2_a: "Опишіть, що саме сталося і на якому пристрої (ПК чи телефон), натисніть <strong>«Надіслати»</strong> — звіт з'явиться у загальному списку багів користувачів і допоможе виправити помилку в наступному оновленні.",
+                    faq_3_q: "Чи можна запропонувати свою ідею для DareCraft?",
+                    faq_3_a: "Так! Виберіть у формі вище тип звернення <strong>«Пропозиція / Ідея»</strong>, опишіть нову механіку, блок або структуру та надішліть її у загальну стрічку.",
+                    footer_copy: "© <span id=\"year\"></span> DARENACHEK studio. DareCraft підтримка.",
+                    footer_site: "САЙТ DARECRAFT ↗",
+                    anon_user: "Гравець",
+                    steps_prefix: "Кроки: ",
+                    empty_list: "Поки що немає звернень у цій категорії. Будьте першим!",
+                    loading_list: "Завантаження звернень...",
+                    sent_success: "Дякуємо! Ваше звернення опубліковано у загальному списку.",
+                    sent_local_warn: "Збережено локально у браузері (не вдалося підключитися до бази)."
                 },
                 en: {
-                    meta_desc: "Official DareCraft website by DARENACHEK studio. Your World. Your Rules.",
-                    nav_home: "HOME",
-                    nav_about: "ABOUT",
-                    nav_features: "FEATURES",
-                    nav_updates: "UPDATES",
-                    nav_gallery: "GALLERY",
-                    nav_download: "DOWNLOAD",
-                    hero_status: "WEBSITE & GAME IN DEVELOPMENT — BUGS MAY OCCUR. IF YOU FIND ANY, PLEASE REPORT TO SUPPORT. THANK YOU!",
-                    hero_lead: "Explore endless landscapes, build your own world, and embark on new adventures. It all awaits you in DareCraft.",
-                    hero_btn_download: "DOWNLOAD GAME ↓",
-                    hero_btn_gallery: "GALLERY",
-                    hero_scene_label: "BACKGROUND SCENE:",
-                    hero_scene_0: "Sunset & Building",
-                    hero_scene_1: "Night Battle",
-                    about_fallback_hint: "Place your banner at <code>assets/studio-bg.png</code>",
-                    about_label: "DISCOVER THE GAME",
-                    about_tagline: "<strong>DARECRAFT</strong> — your world. Your rules. Your story.",
-                    about_desc: "Welcome to <strong>DareCraft</strong> — a world where every adventure begins with a single block! Explore a vast voxel world, mine valuable resources, discover rare ores, and craft everything you need to survive. Build houses, set up shelters, unlock new crafting recipes, and turn ordinary blocks into something extraordinary.",
-                    about_li_1: "<strong>Explore:</strong> discover new territories, find forests, climb mountains, and uncover the secrets of DareCraft.",
-                    about_li_2: "<strong>Mine:</strong> break blocks, gather resources, and find coal and iron.",
-                    about_li_3: "<strong>Craft:</strong> forge tools, weapons, armor, and useful items using a crafting table and furnace.",
-                    about_li_4: "<strong>Build:</strong> construct your own buildings and turn empty space into a home.",
-                    about_li_5: "<strong>Progress:</strong> grow crops, store resources in chests, and shape your own world.",
-                    about_callout: "<strong>STRUCTURES ARE IN DEVELOPMENT!</strong> Future DareCraft updates will introduce new structures to make world exploration even more exciting. Stay tuned!",
-                    about_more: "LEARN MORE →",
-                    features_label: "FEATURES",
-                    features_title: "YOUR <span>ADVENTURE</span>",
-                    feat_1_title: "NEW WORLD",
-                    feat_1_desc: "Explore procedurally generated locations, forests, and mountains, uncovering new corners of the world.",
-                    feat_2_title: "CRAFT & RESOURCES",
-                    feat_2_desc: "Mine ores and use the crafting table, furnace, and chests to advance your survival.",
-                    feat_3_title: "BUILDING",
-                    feat_3_desc: "Create custom structures and shelters, turning simple blocks into complete worlds.",
-                    feat_4_title: "EXPLORATION",
-                    feat_4_desc: "Set out on a journey, watch for upcoming structures, and uncover hidden mysteries.",
-                    updates_label: "DEV LOG",
-                    updates_title: "DARECRAFT <span>UPDATES</span>",
-                    upd_1_ver: "v0.1 · CURRENT",
-                    upd_1_status: "AVAILABLE",
-                    upd_1_title: "World Launch & Core Survival",
-                    upd_1_li_1: "Procedural world generation and 16×16 pixel-art textures",
-                    upd_1_li_2: "Breaking and placing blocks, mining coal and iron",
-                    upd_1_li_3: "Crafting system: crafting table, furnace, chests, and basic items",
-                    upd_1_li_4: "Controls support for both PC and mobile screens",
-                    upd_2_ver: "v0.2 · COMING SOON",
-                    upd_2_status: "IN DEVELOPMENT",
-                    upd_2_title: "New Structures & World Expansion",
-                    upd_2_li_1: "Generation of buildings and hidden stashes to explore",
-                    upd_2_li_2: "New enemy types and night challenges",
-                    upd_2_li_3: "Crafting balance, inventory improvements, and optimization",
-                    gallery_label: "DARECRAFT WORLD",
-                    gallery_title: "GAME <span>GALLERY</span>",
-                    gal_filter_all: "All",
-                    gal_filter_crafting: "Building & Bases",
-                    gal_filter_world: "Battles & World",
-                    gal_filter_updates: "Updates",
-                    gallery_note: "Screenshots from the world of DareCraft. Click any image to view it up close, or use ← / → arrow keys to switch.",
-                    gal_fallback: "DareCraft Screenshot",
-                    dl_label: "DOWNLOAD & SUPPORT",
-                    dl_title: "YOUR ADVENTURE <span>STARTS HERE</span>",
-                    dl_desc: "Download the latest version of DareCraft and try the game yourself. If you find a bug — let us know!",
-                    dl_card_title: "Latest Build",
-                    dl_card_desc: "Extract <strong>DareCraft.zip</strong> into a separate folder before launching the game.",
-                    dl_btn: "DOWNLOAD DARECRAFT (.ZIP)",
-                    bug_card_tag: "HELP DEVELOPMENT",
-                    bug_card_title: "Found a bug?",
-                    bug_card_desc: "Go to the support site, describe an error, bug, or idea, and fill out a ticket.",
-                    bug_btn: "GO TO SUPPORT WEBSITE ↗",
-                    footer_top: "BACK TO TOP ↑"
+                    page_title: "DareCraft Support — DARENACHEK studio",
+                    meta_desc: "Official DareCraft support website by DARENACHEK studio. Report a bug, view player reports, and ask questions.",
+                    logo_sub: "SUPPORT · DARENACHEK",
+                    nav_report: "REPORT A BUG",
+                    nav_community: "USER REPORTS",
+                    nav_faq: "FAQ",
+                    nav_main_site: "GAME SITE ↗",
+                    back_pill: "← Back to DareCraft main website",
+                    hero_status: "DARECRAFT SUPPORT CENTER · HELPING MAKE THE GAME BETTER",
+                    hero_title: "DARECRAFT <span>SUPPORT</span>",
+                    hero_desc: "Found a bug in the build or on the website, or want to suggest an idea for a new update? Fill out the form below — your report will immediately appear in the public user reports list for <strong>DARENACHEK studio</strong> so all players can see it.",
+                    form_tag: "NEW TICKET",
+                    form_title: "Submit a Report",
+                    form_desc: "Fill out the fields below and click <strong>«Submit»</strong> — your report will be published immediately in the <strong>«Bugs Reported by Other Users»</strong> section for everyone.",
+                    label_author: "Your nickname (optional)",
+                    ph_author: "Example: Danyil",
+                    label_category: "Report type",
+                    opt_cat_game: "In-game bug",
+                    opt_cat_site: "Website issue",
+                    opt_cat_idea: "Suggestion / Idea",
+                    opt_cat_launch: "Launch question",
+                    label_version: "Build version",
+                    label_platform: "Device",
+                    opt_plat_pc: "PC (Windows)",
+                    opt_plat_mobile: "Phone / Tablet",
+                    opt_plat_browser: "Browser",
+                    label_what: "Describe the issue or idea",
+                    ph_what: "Example: Texture glitch — blocks appear transparent...",
+                    label_steps: "How to reproduce (if it's a bug)",
+                    ph_steps: "Example: Just load into a world",
+                    btn_submit: "SUBMIT",
+                    btn_sending: "SUBMITTING...",
+                    btn_txt: "DOWNLOAD .TXT",
+                    btn_sample: "EXAMPLE",
+                    preview_tag: "PREVIEW",
+                    preview_title: "Report Card",
+                    preview_note: "After clicking <strong>«Submit»</strong>, the card is saved to the shared database and appears below in the community feed for all players.",
+                    comm_label: "COMMUNITY FEED",
+                    comm_title: "BUGS REPORTED BY <span>OTHER USERS</span>",
+                    comm_subtitle: "Public list of reports and discovered issues from all players.",
+                    filter_all: "All",
+                    filter_game: "In-game bugs",
+                    filter_site: "Website issues",
+                    filter_idea: "Ideas",
+                    faq_label: "HELP & ANSWERS",
+                    faq_title: "FREQUENTLY ASKED <span>QUESTIONS</span>",
+                    faq_1_q: "How do I properly launch the downloaded DareCraft game?",
+                    faq_1_a: "After downloading the game archive, be sure to extract it into a separate folder and run the game from the extracted folder, not directly inside the zip archive.",
+                    faq_2_q: "What should I do if I find a bug in version 0.1?",
+                    faq_2_a: "Describe what happened and on which device (PC or phone), then click <strong>«Submit»</strong> — your report will appear in the public user bug list and help us fix it in the next update.",
+                    faq_3_q: "Can I suggest my own idea for DareCraft?",
+                    faq_3_a: "Yes! Select <strong>«Suggestion / Idea»</strong> as the report type above, describe your new mechanic, block, or structure, and submit it to the public feed.",
+                    footer_copy: "© <span id=\"year\"></span> DARENACHEK studio. DareCraft Support.",
+                    footer_site: "DARECRAFT SITE ↗",
+                    anon_user: "Player",
+                    steps_prefix: "Steps: ",
+                    empty_list: "No reports in this category yet. Be the first to submit one!",
+                    loading_list: "Loading reports...",
+                    sent_success: "Thank you! Your report has been published to the public list.",
+                    sent_local_warn: "Saved locally in your browser (could not reach the database)."
                 },
                 ru: {
-                    meta_desc: "Официальный сайт DareCraft от DARENACHEK studio. Твой мир. Твои правила.",
-                    nav_home: "ГЛАВНАЯ",
-                    nav_about: "ОБ ИГРЕ",
-                    nav_features: "ВОЗМОЖНОСТИ",
-                    nav_updates: "ОБНОВЛЕНИЯ",
-                    nav_gallery: "ГАЛЕРЕЯ",
-                    nav_download: "СКАЧАТЬ",
-                    hero_status: "САЙТ И ИГРА В РАЗРАБОТКЕ — МОГУТ БЫТЬ БАГИ. ЕСЛИ УВИДИТЕ, НАПИШИТЕ В ПОДДЕРЖКУ. СПАСИБО!",
-                    hero_lead: "Исследуй бесконечные просторы, строй собственный мир и отправляйся навстречу приключениям. Всё это ждёт тебя в DareCraft.",
-                    hero_btn_download: "СКАЧАТЬ ИГРУ ↓",
-                    hero_btn_gallery: "ГАЛЕРЕЯ",
-                    hero_scene_label: "СЦЕНА ФОНА:",
-                    hero_scene_0: "Закат и стройка",
-                    hero_scene_1: "Ночная битва",
-                    about_fallback_hint: "Положите свой баннер в <code>assets/studio-bg.png</code>",
-                    about_label: "ЗНАКОМЬСЯ С ИГРОЙ",
-                    about_tagline: "<strong>DARECRAFT</strong> — твой мир. Твои правила. Твоя история.",
-                    about_desc: "Добро пожаловать в <strong>DareCraft</strong> — мир, где каждое приключение начинается с одного блока! Исследуй огромный кубический мир, добывай ценные ресурсы, находи редкие руды и создавай всё необходимое для выживания. Строй собственные дома, обустраивай убежища, открывай новые возможности крафта и превращай обычные блоки в нечто удивительное.",
-                    about_li_1: "<strong>Исследуй:</strong> открывай новые территории, находи леса, исследуй горы и узнавай, какие секреты скрывает мир DareCraft.",
-                    about_li_2: "<strong>Добывай:</strong> ломай блоки, собирай ресурсы, находи уголь и железо.",
-                    about_li_3: "<strong>Создавай:</strong> изготавливай инструменты, оружие, броню и полезные предметы на верстаке и в печке.",
-                    about_li_4: "<strong>Строй:</strong> возводи собственные постройки и превращай пустое пространство в дом.",
-                    about_li_5: "<strong>Развивайся:</strong> выращивай урожай, храни ресурсы в сундуках и создавай свой собственный мир.",
-                    about_callout: "<strong>СТРУКТУРЫ УЖЕ В РАЗРАБОТКЕ!</strong> В будущих обновлениях DareCraft появятся новые структуры, которые сделают исследование мира ещё интереснее. Следи за обновлениями!",
-                    about_more: "УЗНАТЬ БОЛЬШЕ →",
-                    features_label: "ВОЗМОЖНОСТИ",
-                    features_title: "ТВОЁ <span>ПРИКЛЮЧЕНИЕ</span>",
-                    feat_1_title: "НОВЫЙ МИР",
-                    feat_1_desc: "Исследуй процедурно генерируемые локации, леса и горы, открывая новые уголки мира.",
-                    feat_2_title: "КРАФТ И РЕСУРСЫ",
-                    feat_2_desc: "Добывай руды, пользуйся верстаком, печкой и сундуками, чтобы развивать выживание.",
-                    feat_3_title: "СТРОИТЕЛЬСТВО",
-                    feat_3_desc: "Создавай собственные постройки, убежища и превращай блоки в готовые миры.",
-                    feat_4_title: "ИССЛЕДОВАНИЕ",
-                    feat_4_desc: "Отправляйся в путешествие, следи за будущими структурами и находи новые тайны.",
-                    updates_label: "ЖУРНАЛ РАЗРАБОТКИ",
-                    updates_title: "ОБНОВЛЕНИЯ <span>DARECRAFT</span>",
-                    upd_1_ver: "v0.1 · АКТУАЛЬНАЯ",
-                    upd_1_status: "ДОСТУПНА",
-                    upd_1_title: "Старт мира и базовое выживание",
-                    upd_1_li_1: "Процедурная генерация мира и 16×16 пиксельные текстуры",
-                    upd_1_li_2: "Разрушение и установка блоков, добыча угля и железа",
-                    upd_1_li_3: "Система крафта: верстак, печка, сундуки и базовые предметы",
-                    upd_1_li_4: "Поддержка управления на ПК и мобильных экранах",
-                    upd_2_ver: "v0.2 · СКОРО",
-                    upd_2_status: "В РАЗРАБОТКЕ",
-                    upd_2_title: "Новые структуры и расширение мира",
-                    upd_2_li_1: "Генерация построек и тайников для исследования",
-                    upd_2_li_2: "Новые виды противников и ночные испытания",
-                    upd_2_li_3: "Доработка баланса крафта, инвентаря и оптимизации",
-                    gallery_label: "МИР DARECRAFT",
-                    gallery_title: "ГАЛЕРЕЯ <span>ИГРЫ</span>",
-                    gal_filter_all: "Все",
-                    gal_filter_crafting: "Стройка и базы",
-                    gal_filter_world: "Битвы и мир",
-                    gal_filter_updates: "Обновления",
-                    gallery_note: "Скриншоты из мира DareCraft. Нажми на изображение, чтобы рассмотреть его поближе, или используй стрелки ← / → для переключения.",
-                    gal_fallback: "Скриншот DareCraft",
-                    dl_label: "СКАЧАТЬ И ПОДДЕРЖКА",
-                    dl_title: "ТВОЁ ПРИКЛЮЧЕНИЕ <span>НАЧНЁТСЯ ЗДЕСЬ</span>",
-                    dl_desc: "Скачай актуальную версию DareCraft и попробуй игру сам. Если найдёшь баг — дай знать!",
-                    dl_card_title: "Актуальная сборка",
-                    dl_card_desc: "Распакуйте архив <strong>DareCraft.zip</strong> в отдельную папку перед запуском игры.",
-                    dl_btn: "СКАЧАТЬ DARECRAFT (.ZIP)",
-                    bug_card_tag: "ПОМОЩЬ РАЗРАБОТКЕ",
-                    bug_card_title: "Нашли баг?",
-                    bug_card_desc: "Перейдите на сайт поддержки напишите ошибку или баг или же идею заполните квитанцию.",
-                    bug_btn: "ПЕРЕЙТИ НА САЙТ ПОДДЕРЖКИ ↗",
-                    footer_top: "НАВЕРХ ↑"
+                    page_title: "DareCraft поддержка — DARENACHEK studio",
+                    meta_desc: "Официальный сайт поддержки DareCraft от DARENACHEK studio. Сообщить о баге, посмотреть отчёты игроков и задать вопрос.",
+                    logo_sub: "ПОДДЕРЖКА · DARENACHEK",
+                    nav_report: "СООБЩИТЬ О БАГЕ",
+                    nav_community: "БАГИ ПОЛЬЗОВАТЕЛЕЙ",
+                    nav_faq: "ЧАСТЫЕ ВОПРОСЫ",
+                    nav_main_site: "САЙТ ИГРЫ ↗",
+                    back_pill: "← Перейти на главный сайт DareCraft",
+                    hero_status: "ЦЕНТР ПОДДЕРЖКИ DARECRAFT · ПОМОГАЕМ СДЕЛАТЬ ИГРУ ЛУЧШЕ",
+                    hero_title: "DARECRAFT <span>ПОДДЕРЖКА</span>",
+                    hero_desc: "Нашли баг в сборке или на сайте, или хотите предложить идею для нового обновления? Заполните форму ниже — ваше обращение сразу появится в общем списке отчётов пользователей для <strong>DARENACHEK studio</strong>, и его смогут увидеть все игроки.",
+                    form_tag: "НОВОЕ ОБРАЩЕНИЕ",
+                    form_title: "Оформить обращение",
+                    form_desc: "Заполните поля ниже и нажмите <strong>«Отправить»</strong> — обращение сразу опубликуется в разделе <strong>«Баги, которые написали другие пользователи»</strong> для всех.",
+                    label_author: "Ваш ник (необязательно)",
+                    ph_author: "Например: Danyil",
+                    label_category: "Тип обращения",
+                    opt_cat_game: "Баг в игре",
+                    opt_cat_site: "Ошибка на сайте",
+                    opt_cat_idea: "Предложение / Идея",
+                    opt_cat_launch: "Вопрос по запуску",
+                    label_version: "Версия сборки",
+                    label_platform: "Устройство",
+                    opt_plat_pc: "ПК (Windows)",
+                    opt_plat_mobile: "Телефон / Планшет",
+                    opt_plat_browser: "Браузер",
+                    label_what: "Опишите проблему или идею",
+                    ph_what: "Например: Ошибка в текстурах — они прозрачные...",
+                    label_steps: "Как повторить (если это баг)",
+                    ph_steps: "Например: Просто зайти в мир",
+                    btn_submit: "ОТПРАВИТЬ",
+                    btn_sending: "ОТПРАВКА...",
+                    btn_txt: "СКАЧАТЬ .TXT",
+                    btn_sample: "ПРИМЕР",
+                    preview_tag: "ПРЕДПРОСМОТР",
+                    preview_title: "Карточка отчёта",
+                    preview_note: "После нажатия <strong>«Отправить»</strong> карточка сохранится в общую базу и появится ниже в ленте обращений для всех игроков.",
+                    comm_label: "ЛЕНТА СООБЩЕСТВА",
+                    comm_title: "БАГИ, КОТОРЫЕ НАПИСАЛИ <span>ДРУГИЕ ПОЛЬЗОВАТЕЛИ</span>",
+                    comm_subtitle: "Общий список обращений и найденных ошибок от всех игроков.",
+                    filter_all: "Все",
+                    filter_game: "Баги в игре",
+                    filter_site: "Ошибка на сайте",
+                    filter_idea: "Идеи",
+                    faq_label: "ПОМОЩЬ И ОТВЕТЫ",
+                    faq_title: "ЧАСТЫЕ <span>ВОПРОСЫ</span>",
+                    faq_1_q: "Как правильно запустить скачанную игру DareCraft?",
+                    faq_1_a: "После скачивания архива с игрой обязательно распакуйте его в отдельную папку и запускайте игру из распакованной папки, а не прямо внутри архива.",
+                    faq_2_q: "Что делать, если я нашёл баг в версии 0.1?",
+                    faq_2_a: "Опишите, что именно произошло и на каком устройстве (ПК или телефон), нажмите <strong>«Отправить»</strong> — отчёт появится в общем списке багов пользователей и поможет исправить ошибку в следующем обновлении.",
+                    faq_3_q: "Можно ли предложить свою идею для DareCraft?",
+                    faq_3_a: "Да! Выберите в форме выше тип обращения <strong>«Предложение / Идея»</strong>, опишите новую механику, блок или структуру и отправьте её в общую ленту.",
+                    footer_copy: "© <span id=\"year\"></span> DARENACHEK studio. DareCraft поддержка.",
+                    footer_site: "САЙТ DARECRAFT ↗",
+                    anon_user: "Игрок",
+                    steps_prefix: "Как повторить: ",
+                    empty_list: "Пока нет обращений в этой категории. Будьте первым!",
+                    loading_list: "Загрузка обращений...",
+                    sent_success: "Спасибо! Ваше обращение опубликовано в общем списке.",
+                    sent_local_warn: "Сохранено локально в браузере (не удалось подключиться до базы)."
                 }
             };
 
+            let currentLang = "uk";
+            let allReports = [];
+            let activeFilter = "all";
+
             const langSelect = document.getElementById("lang-select");
             const metaDesc = document.querySelector('meta[name="description"]');
+            const communityGrid = document.getElementById("communityGrid");
+            const countAllEl = document.getElementById("countAll");
+            const form = document.getElementById("supportReportForm");
+            const feedbackEl = document.getElementById("supportFeedback");
+            const previewEl = document.getElementById("reportPreview");
+            const badgeEl = document.getElementById("ticketIdBadge");
+
+            function t(key) {
+                return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS.ru[key] || key;
+            }
 
             function applyLanguage(lang) {
-                const safeLang = TRANSLATIONS[lang] ? lang : "uk";
-                localStorage.setItem("darecraft_lang", safeLang);
-                document.documentElement.lang = safeLang;
-                if (langSelect) langSelect.value = safeLang;
-                if (metaDesc && TRANSLATIONS[safeLang].meta_desc) {
-                    metaDesc.setAttribute("content", TRANSLATIONS[safeLang].meta_desc);
-                }
+                currentLang = TRANSLATIONS[lang] ? lang : "uk";
+                localStorage.setItem("darecraft_lang", currentLang);
+                document.documentElement.lang = currentLang;
+                document.title = t("page_title");
+                if (langSelect) langSelect.value = currentLang;
+                if (metaDesc) metaDesc.setAttribute("content", t("meta_desc"));
 
                 document.querySelectorAll("[data-i18n]").forEach((el) => {
                     const key = el.getAttribute("data-i18n");
-                    if (TRANSLATIONS[safeLang][key] !== undefined) {
-                        el.textContent = TRANSLATIONS[safeLang][key];
+                    if (TRANSLATIONS[currentLang][key] !== undefined) {
+                        el.textContent = TRANSLATIONS[currentLang][key];
                     }
                 });
 
                 document.querySelectorAll("[data-i18n-html]").forEach((el) => {
                     const key = el.getAttribute("data-i18n-html");
-                    if (TRANSLATIONS[safeLang][key] !== undefined) {
-                        el.innerHTML = TRANSLATIONS[safeLang][key];
+                    if (TRANSLATIONS[currentLang][key] !== undefined) {
+                        el.innerHTML = TRANSLATIONS[currentLang][key];
                     }
+                });
+
+                document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+                    const key = el.getAttribute("data-i18n-placeholder");
+                    if (TRANSLATIONS[currentLang][key] !== undefined) {
+                        el.placeholder = TRANSLATIONS[currentLang][key];
+                    }
+                });
+
+                const yearEl = document.getElementById("year");
+                if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+                updatePreview();
+                renderReports();
+            }
+
+            function updatePreview() {
+                if (!previewEl) return;
+                const author = (document.getElementById("ticketAuthor")?.value || "").trim() || t("anon_user");
+                const category = document.getElementById("ticketCategory")?.value || "Баг в игре";
+                const version = (document.getElementById("bugVersion")?.value || "0.1").trim();
+                const platform = document.getElementById("bugPlatform")?.value || "ПК (Windows)";
+                const what = (document.getElementById("bugWhatHappened")?.value || "").trim() || "...";
+                const steps = (document.getElementById("bugSteps")?.value || "").trim();
+
+                let text = `[${category}] v${version} · ${platform}\nAuthor: ${author}\n\n${what}`;
+                if (steps) {
+                    text += `\n\n${t("steps_prefix")}${steps}`;
+                }
+                previewEl.textContent = text;
+            }
+
+            ["ticketAuthor", "ticketCategory", "bugVersion", "bugPlatform", "bugWhatHappened", "bugSteps"].forEach((id) => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener("input", updatePreview);
+                if (el) el.addEventListener("change", updatePreview);
+            });
+
+            function getLocalReports() {
+                try {
+                    return JSON.parse(localStorage.getItem("darecraft_community_reports") || "[]");
+                } catch (_) {
+                    return [];
+                }
+            }
+
+            function saveLocalReports(list) {
+                localStorage.setItem("darecraft_community_reports", JSON.stringify(list));
+            }
+
+            function escapeHtml(str) {
+                return String(str || "")
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;");
+            }
+
+            function formatDate(iso) {
+                if (!iso) return "";
+                try {
+                    const d = new Date(iso);
+                    return d.toLocaleDateString(currentLang === "en" ? "en-US" : currentLang === "uk" ? "uk-UA" : "ru-RU", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    });
+                } catch (_) {
+                    return "";
+                }
+            }
+
+            function renderReports() {
+                if (!communityGrid) return;
+                if (countAllEl) countAllEl.textContent = String(allReports.length);
+                if (badgeEl) {
+                    const nextNum = String(allReports.length + 1).padStart(3, "0");
+                    badgeEl.textContent = `#DC-${nextNum}`;
+                }
+
+                const filtered = activeFilter === "all"
+                    ? allReports
+                    : allReports.filter((item) => item.category === activeFilter);
+
+                if (!filtered.length) {
+                    communityGrid.innerHTML = `<div class="community-empty">${escapeHtml(t("empty_list"))}</div>`;
+                    return;
+                }
+
+                communityGrid.innerHTML = filtered.map((item, idx) => {
+                    const isIdea = item.category === "Предложение / Идея";
+                    const author = escapeHtml(item.author || t("anon_user"));
+                    const version = escapeHtml(item.version || "0.1");
+                    const platform = escapeHtml(item.platform || "");
+                    const category = escapeHtml(item.category || "Баг в игре");
+                    const description = escapeHtml(item.description || "");
+                    const steps = escapeHtml(item.steps || "");
+                    const dateStr = formatDate(item.created_at);
+                    const ticketNum = item.id ? `#DC-${String(item.id).padStart(3, "0")}` : `#DC-${String(filtered.length - idx).padStart(3, "0")}`;
+
+                    return `
+                        <article class="community-card">
+                            <div class="community-card-top">
+                                <span class="community-tag ${isIdea ? "is-idea" : ""}">${category}</span>
+                                <span class="community-meta">${ticketNum} · v${version} · ${platform}</span>
+                            </div>
+                            <div class="community-text">${description}</div>
+                            ${steps ? `<div class="community-steps"><strong>${escapeHtml(t("steps_prefix"))}</strong>${steps}</div>` : ""}
+                            <div class="community-meta">${author}${dateStr ? " · " + dateStr : ""}</div>
+                        </article>
+                    `;
+                }).join("");
+            }
+
+            async function loadReports() {
+                if (communityGrid) {
+                    communityGrid.innerHTML = `<div class="community-empty">${escapeHtml(t("loading_list"))}</div>`;
+                }
+
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from(TABLE_NAME)
+                        .select("*")
+                        .order("created_at", { ascending: false })
+                        .limit(100);
+
+                    if (!error && Array.isArray(data)) {
+                        allReports = data;
+                        renderReports();
+                        return;
+                    }
+                }
+
+                allReports = getLocalReports();
+                renderReports();
+            }
+
+            if (form) {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const submitBtn = document.getElementById("submitReportBtn");
+                    const author = (document.getElementById("ticketAuthor")?.value || "").trim() || t("anon_user");
+                    const category = document.getElementById("ticketCategory")?.value || "Баг в игре";
+                    const version = (document.getElementById("bugVersion")?.value || "0.1").trim();
+                    const platform = document.getElementById("bugPlatform")?.value || "ПК (Windows)";
+                    const description = (document.getElementById("bugWhatHappened")?.value || "").trim();
+                    const steps = (document.getElementById("bugSteps")?.value || "").trim();
+
+                    if (!description) return;
+
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = t("btn_sending");
+                    }
+
+                    const payload = {
+                        author,
+                        category,
+                        version,
+                        platform,
+                        description,
+                        steps
+                    };
+
+                    let savedToCloud = false;
+                    if (supabaseClient) {
+                        const { data, error } = await supabaseClient
+                            .from(TABLE_NAME)
+                            .insert([payload])
+                            .select();
+
+                        if (!error && data && data[0]) {
+                            savedToCloud = true;
+                            allReports.unshift(data[0]);
+                        }
+                    }
+
+                    if (!savedToCloud) {
+                        const localItem = {
+                            ...payload,
+                            id: allReports.length + 1,
+                            created_at: new Date().toISOString()
+                        };
+                        const localList = getLocalReports();
+                        localList.unshift(localItem);
+                        saveLocalReports(localList);
+                        allReports = localList;
+                    }
+
+                    renderReports();
+                    form.reset();
+                    document.getElementById("bugVersion").value = "0.1";
+                    updatePreview();
+
+                    if (feedbackEl) {
+                        feedbackEl.textContent = savedToCloud ? t("sent_success") : `${t("sent_success")} (${t("sent_local_warn")})`;
+                    }
+
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = t("btn_submit");
+                    }
+                });
+            }
+
+            document.querySelectorAll(".pill-btn").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    document.querySelectorAll(".pill-btn").forEach((b) => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    activeFilter = btn.dataset.filter || "all";
+                    renderReports();
+                });
+            });
+
+            const fillSampleBtn = document.getElementById("fillSampleBtn");
+            if (fillSampleBtn) {
+                fillSampleBtn.addEventListener("click", () => {
+                    document.getElementById("ticketAuthor").value = "Danyil";
+                    document.getElementById("ticketCategory").value = "Баг в игре";
+                    document.getElementById("bugVersion").value = "0.1";
+                    document.getElementById("bugPlatform").value = "ПК (Windows)";
+                    document.getElementById("bugWhatHappened").value = t("ph_what").replace(/^[^:]+:\s*/, "");
+                    document.getElementById("bugSteps").value = t("ph_steps").replace(/^[^:]+:\s*/, "");
+                    updatePreview();
+                });
+            }
+
+            const downloadReportBtn = document.getElementById("downloadReportBtn");
+            if (downloadReportBtn) {
+                downloadReportBtn.addEventListener("click", () => {
+                    updatePreview();
+                    const blob = new Blob([previewEl.textContent], { type: "text/plain;charset=utf-8" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "DareCraft-report.txt";
+                    a.click();
+                    URL.revokeObjectURL(url);
                 });
             }
 
@@ -560,6 +776,7 @@
                 savedLang || (browserLang.startsWith("ru") ? "ru" : browserLang.startsWith("en") ? "en" : "uk");
 
             applyLanguage(initialLang);
+            loadReports();
         })();
     </script>
 </body>
