@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://yodtlxkxtynvwcnkenhh.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_yzxj6bfR3MqckqGnxGV0kg_NjA4vsT_";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvZHRseGt4dHludndjbmtlbmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNDA2MzcsImV4cCI6MjExMDkxNjYzN30.kKG6hbU2hqgCl8iJVg0MDy8mdER5GiIFx6TlDw2r4FA";
 
 document.addEventListener("DOMContentLoaded", () => {
     const yearEl = document.getElementById("year");
