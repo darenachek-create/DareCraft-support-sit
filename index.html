@@ -11,6 +11,99 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .lang-select {
+            padding: 6px 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: #18181d;
+            border: 1.5px solid #0078d7;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            margin-left: 12px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .lang-select:hover {
+            border-color: #3399ff;
+        }
+        .lang-select:focus {
+            box-shadow: 0 0 0 2px rgba(0, 120, 215, 0.35);
+        }
+        .lang-select option {
+            background-color: #18181d;
+            color: #ffffff;
+        }
+        @media (max-width: 900px) {
+            .lang-select {
+                margin: 10px 0 0 0;
+                width: fit-content;
+            }
+        }
+        .community-card {
+            background: #18181d;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .community-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .community-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(230, 57, 70, 0.16);
+            color: #ff6b6b;
+            border: 1px solid rgba(230, 57, 70, 0.35);
+        }
+        .community-tag.is-idea {
+            background: rgba(0, 120, 215, 0.16);
+            color: #5cb3ff;
+            border-color: rgba(0, 120, 215, 0.35);
+        }
+        .community-meta {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .community-text {
+            color: #f3f4f6;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .community-steps {
+            font-size: 13px;
+            color: #9ca3af;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 10px;
+            border-radius: 6px;
+            border-left: 2px solid #0078d7;
+            white-space: pre-wrap;
+        }
+        .community-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 32px;
+            color: #9ca3af;
+            background: #18181d;
+            border-radius: 10px;
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+        }
+    </style>
 </head>
 <body>
 
@@ -19,7 +112,7 @@
     <header class="header" id="header">
         <a href="#top" class="logo">
             <span class="logo-main">DARE<span>CRAFT</span></span>
-            <span class="logo-sub">ПОДДЕРЖКА · DARENACHEK</span>
+            <span class="logo-sub" data-i18n="logo_sub">ПОДДЕРЖКА · DARENACHEK</span>
         </a>
 
         <button class="menu-toggle" id="menuToggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="navigation">
@@ -27,24 +120,29 @@
         </button>
 
         <nav class="navigation" id="navigation" aria-label="Навигация поддержки">
-            <a href="#report" class="nav-link active">СООБЩИТЬ О БАГЕ</a>
-            <a href="#community-bugs" class="nav-link">БАГИ ПОЛЬЗОВАТЕЛЕЙ</a>
-            <a href="#faq" class="nav-link">ЧАСТЫЕ ВОПРОСЫ</a>
-            <a href="https://darenachek-create.github.io/DareCraft/" class="nav-link nav-download">САЙТ ИГРЫ ↗</a>
+            <a href="#report" class="nav-link active" data-i18n="nav_report">СООБЩИТЬ О БАГЕ</a>
+            <a href="#community-bugs" class="nav-link" data-i18n="nav_community">БАГИ ПОЛЬЗОВАТЕЛЕЙ</a>
+            <a href="#faq" class="nav-link" data-i18n="nav_faq">ЧАСТЫЕ ВОПРОСЫ</a>
+            <a href="https://darenachek-create.github.io/DareCraft/" class="nav-link nav-download" data-i18n="nav_main_site">САЙТ ИГРЫ ↗</a>
+            <select id="lang-select" class="lang-select" aria-label="Выбор языка">
+                <option value="uk">Українська</option>
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
+            </select>
         </nav>
     </header>
 
     <main id="top">
         <section class="support-hero">
             <div class="support-hero-inner">
-                <a href="https://darenachek-create.github.io/DareCraft/" class="back-pill">← Перейти на главный сайт DareCraft</a>
+                <a href="https://darenachek-create.github.io/DareCraft/" class="back-pill" data-i18n="back_pill">← Перейти на главный сайт DareCraft</a>
                 <div class="status" role="status">
                     <span class="status-dot" aria-hidden="true"></span>
-                    <span>ЦЕНТР ПОДДЕРЖКИ DARECRAFT · ПОМОГАЕМ СДЕЛАТЬ ИГРУ ЛУЧШЕ</span>
+                    <span data-i18n="hero_status">ЦЕНТР ПОДДЕРЖКИ DARECRAFT · ПОМОГАЕМ СДЕЛАТЬ ИГРУ ЛУЧШЕ</span>
                 </div>
-                <h1>DARECRAFT <span>ПОДДЕРЖКА</span></h1>
-                <p>
-                    Нашли баг в сборке или на сайте, или хотите предложить идею для нового обновления? Заполните форму ниже — ваше обращение сразу появится в списке отчётов пользователей для <strong>DARENACHEK studio</strong>.
+                <h1 data-i18n-html="hero_title">DARECRAFT <span>ПОДДЕРЖКА</span></h1>
+                <p data-i18n-html="hero_desc">
+                    Нашли баг в сборке или на сайте, или хотите предложить идею для нового обновления? Заполните форму ниже — ваше обращение сразу появится в общем списке отчётов пользователей для <strong>DARENACHEK studio</strong>, и его смогут увидеть все игроки.
                 </p>
             </div>
         </section>
@@ -54,61 +152,61 @@
                 <div class="support-form-card">
                     <div class="release-meta">
                         <span class="release-badge">TICKET</span>
-                        <span class="release-file">НОВОЕ ОБРАЩЕНИЕ</span>
+                        <span class="release-file" data-i18n="form_tag">НОВОЕ ОБРАЩЕНИЕ</span>
                     </div>
-                    <h2>Оформить обращение</h2>
-                    <p class="support-desc">
-                        Заполните поля ниже и нажмите <strong>«Отправить»</strong> — обращение сразу добавится в раздел <strong>«Баги, которые написали другие пользователи»</strong>.
+                    <h2 data-i18n="form_title">Оформить обращение</h2>
+                    <p class="support-desc" data-i18n-html="form_desc">
+                        Заполните поля ниже и нажмите <strong>«Отправить»</strong> — обращение сразу опубликуется в разделе <strong>«Баги, которые написали другие пользователи»</strong> для всех.
                     </p>
 
                     <form id="supportReportForm" class="bug-form">
                         <div class="form-row-two">
                             <div class="form-row">
-                                <label for="ticketAuthor">Ваш ник (необязательно)</label>
-                                <input type="text" id="ticketAuthor" name="ticketAuthor" placeholder="Например: Danyil">
+                                <label for="ticketAuthor" data-i18n="label_author">Ваш ник (необязательно)</label>
+                                <input type="text" id="ticketAuthor" name="ticketAuthor" data-i18n-placeholder="ph_author" placeholder="Например: Danyil">
                             </div>
 
                             <div class="form-row">
-                                <label for="ticketCategory">Тип обращения</label>
+                                <label for="ticketCategory" data-i18n="label_category">Тип обращения</label>
                                 <select id="ticketCategory" name="ticketCategory">
-                                    <option value="Баг в игре">Баг в игре</option>
-                                    <option value="Ошибка на сайте">Ошибка на сайте</option>
-                                    <option value="Предложение / Идея">Предложение / Идея</option>
-                                    <option value="Вопрос по запуску">Вопрос по запуску</option>
+                                    <option value="Баг в игре" data-i18n="opt_cat_game">Баг в игре</option>
+                                    <option value="Ошибка на сайте" data-i18n="opt_cat_site">Ошибка на сайте</option>
+                                    <option value="Предложение / Идея" data-i18n="opt_cat_idea">Предложение / Идея</option>
+                                    <option value="Вопрос по запуску" data-i18n="opt_cat_launch">Вопрос по запуску</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-row-two">
                             <div class="form-row">
-                                <label for="bugVersion">Версия сборки</label>
+                                <label for="bugVersion" data-i18n="label_version">Версия сборки</label>
                                 <input type="text" id="bugVersion" name="bugVersion" value="0.1" required>
                             </div>
 
                             <div class="form-row">
-                                <label for="bugPlatform">Устройство</label>
+                                <label for="bugPlatform" data-i18n="label_platform">Устройство</label>
                                 <select id="bugPlatform" name="bugPlatform">
-                                    <option value="ПК (Windows)">ПК (Windows)</option>
-                                    <option value="Телефон / Планшет">Телефон / Планшет</option>
-                                    <option value="Браузер">Браузер</option>
+                                    <option value="ПК (Windows)" data-i18n="opt_plat_pc">ПК (Windows)</option>
+                                    <option value="Телефон / Планшет" data-i18n="opt_plat_mobile">Телефон / Планшет</option>
+                                    <option value="Браузер" data-i18n="opt_plat_browser">Браузер</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-row">
-                            <label for="bugWhatHappened">Опишите проблему или идею</label>
-                            <textarea id="bugWhatHappened" name="bugWhatHappened" rows="3" placeholder="Например: Ошибка в текстурах — они прозрачные..." required></textarea>
+                            <label for="bugWhatHappened" data-i18n="label_what">Опишите проблему или идею</label>
+                            <textarea id="bugWhatHappened" name="bugWhatHappened" rows="3" data-i18n-placeholder="ph_what" placeholder="Например: Ошибка в текстурах — они прозрачные..." required></textarea>
                         </div>
 
                         <div class="form-row">
-                            <label for="bugSteps">Как повторить (если это баг)</label>
-                            <textarea id="bugSteps" name="bugSteps" rows="2" placeholder="Например: Просто зайти в мир"></textarea>
+                            <label for="bugSteps" data-i18n="label_steps">Как повторить (если это баг)</label>
+                            <textarea id="bugSteps" name="bugSteps" rows="2" data-i18n-placeholder="ph_steps" placeholder="Например: Просто зайти в мир"></textarea>
                         </div>
 
                         <div class="card-actions">
-                            <button type="submit" class="btn btn-red">ОТПРАВИТЬ</button>
-                            <button type="button" class="btn btn-outline" id="downloadReportBtn">СКАЧАТЬ .TXT</button>
-                            <button type="button" class="btn btn-outline" id="fillSampleBtn">ПРИМЕР</button>
+                            <button type="submit" class="btn btn-red" id="submitReportBtn" data-i18n="btn_submit">ОТПРАВИТЬ</button>
+                            <button type="button" class="btn btn-outline" id="downloadReportBtn" data-i18n="btn_txt">СКАЧАТЬ .TXT</button>
+                            <button type="button" class="btn btn-outline" id="fillSampleBtn" data-i18n="btn_sample">ПРИМЕР</button>
                         </div>
 
                         <div class="download-feedback" id="supportFeedback" role="status" aria-live="polite"></div>
@@ -118,12 +216,12 @@
                 <aside class="support-side-card">
                     <div class="release-meta">
                         <span class="release-badge outline" id="ticketIdBadge">#DC-001</span>
-                        <span class="release-file">ПРЕДПРОСМОТР</span>
+                        <span class="release-file" data-i18n="preview_tag">ПРЕДПРОСМОТР</span>
                     </div>
-                    <h3>Карточка отчёта</h3>
+                    <h3 data-i18n="preview_title">Карточка отчёта</h3>
                     <pre class="report-preview" id="reportPreview"></pre>
-                    <p class="support-note">
-                        После нажатия <strong>«Отправить»</strong> карточка появится ниже в ленте обращений и сохранится в вашем браузере.
+                    <p class="support-note" data-i18n-html="preview_note">
+                        После нажатия <strong>«Отправить»</strong> карточка сохранится в общую базу и появится ниже в ленте обращений для всех игроков.
                     </p>
                 </aside>
             </div>
@@ -131,17 +229,17 @@
 
         <section class="section community-section" id="community-bugs">
             <div class="section-header-center">
-                <span class="section-label">ЛЕНТА СООБЩЕСТВА</span>
-                <h2>БАГИ, КОТОРЫЕ НАПИСАЛИ <span>ДРУГИЕ ПОЛЬЗОВАТЕЛИ</span></h2>
-                <p class="section-subtitle">Отправленные вами обращения и найденные ошибки в одном списке.</p>
+                <span class="section-label" data-i18n="comm_label">ЛЕНТА СООБЩЕСТВА</span>
+                <h2 data-i18n-html="comm_title">БАГИ, КОТОРЫЕ НАПИСАЛИ <span>ДРУГИЕ ПОЛЬЗОВАТЕЛИ</span></h2>
+                <p class="section-subtitle" data-i18n="comm_subtitle">Общий список обращений и найденных ошибок от всех игроков.</p>
             </div>
 
             <div class="community-toolbar">
                 <div class="filter-pills" role="group" aria-label="Фильтр обращений">
-                    <button type="button" class="pill-btn active" data-filter="all">Все (<span id="countAll">0</span>)</button>
-                    <button type="button" class="pill-btn" data-filter="Баг в игре">Баги в игре</button>
-                    <button type="button" class="pill-btn" data-filter="Ошибка на сайте">Ошибка на сайте</button>
-                    <button type="button" class="pill-btn" data-filter="Предложение / Идея">Идеи</button>
+                    <button type="button" class="pill-btn active" data-filter="all"><span data-i18n="filter_all">Все</span> (<span id="countAll">0</span>)</button>
+                    <button type="button" class="pill-btn" data-filter="Баг в игре" data-i18n="filter_game">Баги в игре</button>
+                    <button type="button" class="pill-btn" data-filter="Ошибка на сайте" data-i18n="filter_site">Ошибка на сайте</button>
+                    <button type="button" class="pill-btn" data-filter="Предложение / Идея" data-i18n="filter_idea">Идеи</button>
                 </div>
             </div>
 
@@ -150,24 +248,24 @@
 
         <section class="section faq-section" id="faq">
             <div class="section-header-center">
-                <span class="section-label">ПОМОЩЬ И ОТВЕТЫ</span>
-                <h2>ЧАСТЫЕ <span>ВОПРОСЫ</span></h2>
+                <span class="section-label" data-i18n="faq_label">ПОМОЩЬ И ОТВЕТЫ</span>
+                <h2 data-i18n-html="faq_title">ЧАСТЫЕ <span>ВОПРОСЫ</span></h2>
             </div>
 
             <div class="faq-list">
                 <article class="faq-item">
-                    <h3>Как правильно запустить скачанную игру DareCraft?</h3>
-                    <p>После скачивания архива с игрой обязательно распакуйте его в отдельную папку и запускайте игру из распакованной папки, а не прямо внутри архива.</p>
+                    <h3 data-i18n="faq_1_q">Как правильно запустить скачанную игру DareCraft?</h3>
+                    <p data-i18n="faq_1_a">После скачивания архива с игрой обязательно распакуйте его в отдельную папку и запускайте игру из распакованной папки, а не прямо внутри архива.</p>
                 </article>
 
                 <article class="faq-item">
-                    <h3>Что делать, если я нашёл баг в версии 0.1?</h3>
-                    <p>Опишите, что именно произошло и на каком устройстве (ПК или телефон), нажмите <strong>«Отправить»</strong> — отчёт появится в списке багов пользователей и поможет исправить ошибку в следующем обновлении.</p>
+                    <h3 data-i18n="faq_2_q">Что делать, если я нашёл баг в версии 0.1?</h3>
+                    <p data-i18n-html="faq_2_a">Опишите, что именно произошло и на каком устройстве (ПК или телефон), нажмите <strong>«Отправить»</strong> — отчёт появится в общем списке багов пользователей и поможет исправить ошибку в следующем обновлении.</p>
                 </article>
 
                 <article class="faq-item">
-                    <h3>Можно ли предложить свою идею для DareCraft?</h3>
-                    <p>Да! Выберите в форме выше тип обращения <strong>«Предложение / Идея»</strong>, опишите новую механику, блок или структуру и отправьте её в общую ленту.</p>
+                    <h3 data-i18n="faq_3_q">Можно ли предложить свою идею для DareCraft?</h3>
+                    <p data-i18n-html="faq_3_a">Да! Выберите в форме выше тип обращения <strong>«Предложение / Идея»</strong>, опишите новую механику, блок или структуру и отправьте её в общую ленту.</p>
                 </article>
             </div>
         </section>
@@ -175,10 +273,511 @@
 
     <footer class="footer">
         <a href="#top" class="footer-logo">DARENACHEK STUDIO</a>
-        <p>© <span id="year"></span> DARENACHEK studio. DareCraft поддержка.</p>
-        <a href="https://darenachek-create.github.io/DareCraft/" class="footer-top">САЙТ DARECRAFT ↗</a>
+        <p data-i18n-html="footer_copy">© <span id="year"></span> DARENACHEK studio. DareCraft поддержка.</p>
+        <a href="https://darenachek-create.github.io/DareCraft/" class="footer-top" data-i18n="footer_site">САЙТ DARECRAFT ↗</a>
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        (function () {
+            // ==========================================
+            // 1. НАСТРОЙКИ SUPABASE
+            // ==========================================
+            const SUPABASE_URL = "https://yodtlxkxtynvwcnkenhh.supabase.co";
+            const SUPABASE_ANON_KEY = "sb_publishable_yzxj6bfR3MqckqGnxGV0kg_NjA4vsT_";
+            const TABLE_NAME = "bug_reports";
+
+            let supabaseClient = null;
+            if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+
+            // ==========================================
+            // 2. ПЕРЕВОДЫ (UK / EN / RU)
+            // ==========================================
+            const TRANSLATIONS = {
+                uk: {
+                    page_title: "DareCraft підтримка — DARENACHEK studio",
+                    meta_desc: "Офіційний сайт підтримки DareCraft від DARENACHEK studio. Повідомити про баг, переглянути звіти гравців та поставити запитання.",
+                    logo_sub: "ПІДТРИМКА · DARENACHEK",
+                    nav_report: "ПОВІДОМИТИ ПРО БАГ",
+                    nav_community: "БАГИ КОРИСТУВАЧІВ",
+                    nav_faq: "ЧАСТІ ЗАПИТАННЯ",
+                    nav_main_site: "САЙТ ГРИ ↗",
+                    back_pill: "← Перейти на головний сайт DareCraft",
+                    hero_status: "ЦЕНТР ПІДТРИМКИ DARECRAFT · ДОПОМАГАЄМО ЗРОБИТИ ГРУ КРАЩОЮ",
+                    hero_title: "DARECRAFT <span>ПІДТРИМКА</span>",
+                    hero_desc: "Знайшли баг у збірці чи на сайті або хочете запропонувати ідею для нового оновлення? Заповніть форму нижче — ваше звернення одразу з'явиться у загальному списку звітів користувачів для <strong>DARENACHEK studio</strong>, і його зможуть побачити всі гравці.",
+                    form_tag: "НОВЕ ЗВЕРНЕННЯ",
+                    form_title: "Оформити звернення",
+                    form_desc: "Заповніть поля нижче та натисніть <strong>«Надіслати»</strong> — звернення одразу опублікується у розділі <strong>«Баги, які написали інші користувачі»</strong> для всіх.",
+                    label_author: "Ваш нік (необов'язково)",
+                    ph_author: "Наприклад: Danyil",
+                    label_category: "Тип звернення",
+                    opt_cat_game: "Баг у грі",
+                    opt_cat_site: "Помилка на сайті",
+                    opt_cat_idea: "Пропозиція / Ідея",
+                    opt_cat_launch: "Питання щодо запуску",
+                    label_version: "Версія збірки",
+                    label_platform: "Пристрій",
+                    opt_plat_pc: "ПК (Windows)",
+                    opt_plat_mobile: "Телефон / Планшет",
+                    opt_plat_browser: "Браузер",
+                    label_what: "Опишіть проблему або ідею",
+                    ph_what: "Наприклад: Помилка в текстурах — вони прозорі...",
+                    label_steps: "Як повторити (якщо це баг)",
+                    ph_steps: "Наприклад: Просто зайти у світ",
+                    btn_submit: "НАДІСЛАТИ",
+                    btn_sending: "НАДСИЛАННЯ...",
+                    btn_txt: "ЗАВАНТАЖИТИ .TXT",
+                    btn_sample: "ПРИКЛАД",
+                    preview_tag: "ПОПЕРЕДНІЙ ПЕРЕГЛЯД",
+                    preview_title: "Картка звіту",
+                    preview_note: "Після натискання <strong>«Надіслати»</strong> картка збережеться у спільну базу та з'явиться нижче у стрічці звернень для всіх гравців.",
+                    comm_label: "СТРІЧКА СПІЛЬНОТИ",
+                    comm_title: "БАГИ, ЯКІ НАПИСАЛИ <span>ІНШІ КОРИСТУВАЧІ</span>",
+                    comm_subtitle: "Загальний список звернень і знайдених помилок від усіх гравців.",
+                    filter_all: "Усі",
+                    filter_game: "Баги у грі",
+                    filter_site: "Помилка на сайті",
+                    filter_idea: "Ідеї",
+                    faq_label: "ДОПОМОГА ТА ВІДПОВІДІ",
+                    faq_title: "ЧАСТІ <span>ЗАПИТАННЯ</span>",
+                    faq_1_q: "Як правильно запустити завантажену гру DareCraft?",
+                    faq_1_a: "Після завантаження архіву з грою обов'язково розпакуйте його в окрему папку і запускайте гру з розпакованої папки, а не прямо всередині архіву.",
+                    faq_2_q: "Що робити, якщо я знайшов баг у версії 0.1?",
+                    faq_2_a: "Опишіть, що саме сталося і на якому пристрої (ПК чи телефон), натисніть <strong>«Надіслати»</strong> — звіт з'явиться у загальному списку багів користувачів і допоможе виправити помилку в наступному оновленні.",
+                    faq_3_q: "Чи можна запропонувати свою ідею для DareCraft?",
+                    faq_3_a: "Так! Виберіть у формі вище тип звернення <strong>«Пропозиція / Ідея»</strong>, опишіть нову механіку, блок або структуру та надішліть її у загальну стрічку.",
+                    footer_copy: "© <span id=\"year\"></span> DARENACHEK studio. DareCraft підтримка.",
+                    footer_site: "САЙТ DARECRAFT ↗",
+                    anon_user: "Гравець",
+                    steps_prefix: "Кроки: ",
+                    empty_list: "Поки що немає звернень у цій категорії. Будьте першим!",
+                    loading_list: "Завантаження звернень...",
+                    sent_success: "Дякуємо! Ваше звернення опубліковано у загальному списку.",
+                    sent_local_warn: "Збережено локально у браузері (не вдалося підключитися до бази)."
+                },
+                en: {
+                    page_title: "DareCraft Support — DARENACHEK studio",
+                    meta_desc: "Official DareCraft support website by DARENACHEK studio. Report a bug, view player reports, and ask questions.",
+                    logo_sub: "SUPPORT · DARENACHEK",
+                    nav_report: "REPORT A BUG",
+                    nav_community: "USER REPORTS",
+                    nav_faq: "FAQ",
+                    nav_main_site: "GAME SITE ↗",
+                    back_pill: "← Back to DareCraft main website",
+                    hero_status: "DARECRAFT SUPPORT CENTER · HELPING MAKE THE GAME BETTER",
+                    hero_title: "DARECRAFT <span>SUPPORT</span>",
+                    hero_desc: "Found a bug in the build or on the website, or want to suggest an idea for a new update? Fill out the form below — your report will immediately appear in the public user reports list for <strong>DARENACHEK studio</strong> so all players can see it.",
+                    form_tag: "NEW TICKET",
+                    form_title: "Submit a Report",
+                    form_desc: "Fill out the fields below and click <strong>«Submit»</strong> — your report will be published immediately in the <strong>«Bugs Reported by Other Users»</strong> section for everyone.",
+                    label_author: "Your nickname (optional)",
+                    ph_author: "Example: Danyil",
+                    label_category: "Report type",
+                    opt_cat_game: "In-game bug",
+                    opt_cat_site: "Website issue",
+                    opt_cat_idea: "Suggestion / Idea",
+                    opt_cat_launch: "Launch question",
+                    label_version: "Build version",
+                    label_platform: "Device",
+                    opt_plat_pc: "PC (Windows)",
+                    opt_plat_mobile: "Phone / Tablet",
+                    opt_plat_browser: "Browser",
+                    label_what: "Describe the issue or idea",
+                    ph_what: "Example: Texture glitch — blocks appear transparent...",
+                    label_steps: "How to reproduce (if it's a bug)",
+                    ph_steps: "Example: Just load into a world",
+                    btn_submit: "SUBMIT",
+                    btn_sending: "SUBMITTING...",
+                    btn_txt: "DOWNLOAD .TXT",
+                    btn_sample: "EXAMPLE",
+                    preview_tag: "PREVIEW",
+                    preview_title: "Report Card",
+                    preview_note: "After clicking <strong>«Submit»</strong>, the card is saved to the shared database and appears below in the community feed for all players.",
+                    comm_label: "COMMUNITY FEED",
+                    comm_title: "BUGS REPORTED BY <span>OTHER USERS</span>",
+                    comm_subtitle: "Public list of reports and discovered issues from all players.",
+                    filter_all: "All",
+                    filter_game: "In-game bugs",
+                    filter_site: "Website issues",
+                    filter_idea: "Ideas",
+                    faq_label: "HELP & ANSWERS",
+                    faq_title: "FREQUENTLY ASKED <span>QUESTIONS</span>",
+                    faq_1_q: "How do I properly launch the downloaded DareCraft game?",
+                    faq_1_a: "After downloading the game archive, be sure to extract it into a separate folder and run the game from the extracted folder, not directly inside the zip archive.",
+                    faq_2_q: "What should I do if I find a bug in version 0.1?",
+                    faq_2_a: "Describe what happened and on which device (PC or phone), then click <strong>«Submit»</strong> — your report will appear in the public user bug list and help us fix it in the next update.",
+                    faq_3_q: "Can I suggest my own idea for DareCraft?",
+                    faq_3_a: "Yes! Select <strong>«Suggestion / Idea»</strong> as the report type above, describe your new mechanic, block, or structure, and submit it to the public feed.",
+                    footer_copy: "© <span id=\"year\"></span> DARENACHEK studio. DareCraft Support.",
+                    footer_site: "DARECRAFT SITE ↗",
+                    anon_user: "Player",
+                    steps_prefix: "Steps: ",
+                    empty_list: "No reports in this category yet. Be the first to submit one!",
+                    loading_list: "Loading reports...",
+                    sent_success: "Thank you! Your report has been published to the public list.",
+                    sent_local_warn: "Saved locally in your browser (could not reach the database)."
+                },
+                ru: {
+                    page_title: "DareCraft поддержка — DARENACHEK studio",
+                    meta_desc: "Официальный сайт поддержки DareCraft от DARENACHEK studio. Сообщить о баге, посмотреть отчёты игроков и задать вопрос.",
+                    logo_sub: "ПОДДЕРЖКА · DARENACHEK",
+                    nav_report: "СООБЩИТЬ О БАГЕ",
+                    nav_community: "БАГИ ПОЛЬЗОВАТЕЛЕЙ",
+                    nav_faq: "ЧАСТЫЕ ВОПРОСЫ",
+                    nav_main_site: "САЙТ ИГРЫ ↗",
+                    back_pill: "← Перейти на главный сайт DareCraft",
+                    hero_status: "ЦЕНТР ПОДДЕРЖКИ DARECRAFT · ПОМОГАЕМ СДЕЛАТЬ ИГРУ ЛУЧШЕ",
+                    hero_title: "DARECRAFT <span>ПОДДЕРЖКА</span>",
+                    hero_desc: "Нашли баг в сборке или на сайте, или хотите предложить идею для нового обновления? Заполните форму ниже — ваше обращение сразу появится в общем списке отчётов пользователей для <strong>DARENACHEK studio</strong>, и его смогут увидеть все игроки.",
+                    form_tag: "НОВОЕ ОБРАЩЕНИЕ",
+                    form_title: "Оформить обращение",
+                    form_desc: "Заполните поля ниже и нажмите <strong>«Отправить»</strong> — обращение сразу опубликуется в разделе <strong>«Баги, которые написали другие пользователи»</strong> для всех.",
+                    label_author: "Ваш ник (необязательно)",
+                    ph_author: "Например: Danyil",
+                    label_category: "Тип обращения",
+                    opt_cat_game: "Баг в игре",
+                    opt_cat_site: "Ошибка на сайте",
+                    opt_cat_idea: "Предложение / Идея",
+                    opt_cat_launch: "Вопрос по запуску",
+                    label_version: "Версия сборки",
+                    label_platform: "Устройство",
+                    opt_plat_pc: "ПК (Windows)",
+                    opt_plat_mobile: "Телефон / Планшет",
+                    opt_plat_browser: "Браузер",
+                    label_what: "Опишите проблему или идею",
+                    ph_what: "Например: Ошибка в текстурах — они прозрачные...",
+                    label_steps: "Как повторить (если это баг)",
+                    ph_steps: "Например: Просто зайти в мир",
+                    btn_submit: "ОТПРАВИТЬ",
+                    btn_sending: "ОТПРАВКА...",
+                    btn_txt: "СКАЧАТЬ .TXT",
+                    btn_sample: "ПРИМЕР",
+                    preview_tag: "ПРЕДПРОСМОТР",
+                    preview_title: "Карточка отчёта",
+                    preview_note: "После нажатия <strong>«Отправить»</strong> карточка сохранится в общую базу и появится ниже в ленте обращений для всех игроков.",
+                    comm_label: "ЛЕНТА СООБЩЕСТВА",
+                    comm_title: "БАГИ, КОТОРЫЕ НАПИСАЛИ <span>ДРУГИЕ ПОЛЬЗОВАТЕЛИ</span>",
+                    comm_subtitle: "Общий список обращений и найденных ошибок от всех игроков.",
+                    filter_all: "Все",
+                    filter_game: "Баги в игре",
+                    filter_site: "Ошибка на сайте",
+                    filter_idea: "Идеи",
+                    faq_label: "ПОМОЩЬ И ОТВЕТЫ",
+                    faq_title: "ЧАСТЫЕ <span>ВОПРОСЫ</span>",
+                    faq_1_q: "Как правильно запустить скачанную игру DareCraft?",
+                    faq_1_a: "После скачивания архива с игрой обязательно распакуйте его в отдельную папку и запускайте игру из распакованной папки, а не прямо внутри архива.",
+                    faq_2_q: "Что делать, если я нашёл баг в версии 0.1?",
+                    faq_2_a: "Опишите, что именно произошло и на каком устройстве (ПК или телефон), нажмите <strong>«Отправить»</strong> — отчёт появится в общем списке багов пользователей и поможет исправить ошибку в следующем обновлении.",
+                    faq_3_q: "Можно ли предложить свою идею для DareCraft?",
+                    faq_3_a: "Да! Выберите в форме выше тип обращения <strong>«Предложение / Идея»</strong>, опишите новую механику, блок или структуру и отправьте её в общую ленту.",
+                    footer_copy: "© <span id=\"year\"></span> DARENACHEK studio. DareCraft поддержка.",
+                    footer_site: "САЙТ DARECRAFT ↗",
+                    anon_user: "Игрок",
+                    steps_prefix: "Как повторить: ",
+                    empty_list: "Пока нет обращений в этой категории. Будьте первым!",
+                    loading_list: "Загрузка обращений...",
+                    sent_success: "Спасибо! Ваше обращение опубликовано в общем списке.",
+                    sent_local_warn: "Сохранено локально в браузере (не удалось подключиться до базы)."
+                }
+            };
+
+            let currentLang = "uk";
+            let allReports = [];
+            let activeFilter = "all";
+
+            const langSelect = document.getElementById("lang-select");
+            const metaDesc = document.querySelector('meta[name="description"]');
+            const communityGrid = document.getElementById("communityGrid");
+            const countAllEl = document.getElementById("countAll");
+            const form = document.getElementById("supportReportForm");
+            const feedbackEl = document.getElementById("supportFeedback");
+            const previewEl = document.getElementById("reportPreview");
+            const badgeEl = document.getElementById("ticketIdBadge");
+
+            function t(key) {
+                return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS.ru[key] || key;
+            }
+
+            function applyLanguage(lang) {
+                currentLang = TRANSLATIONS[lang] ? lang : "uk";
+                localStorage.setItem("darecraft_lang", currentLang);
+                document.documentElement.lang = currentLang;
+                document.title = t("page_title");
+                if (langSelect) langSelect.value = currentLang;
+                if (metaDesc) metaDesc.setAttribute("content", t("meta_desc"));
+
+                document.querySelectorAll("[data-i18n]").forEach((el) => {
+                    const key = el.getAttribute("data-i18n");
+                    if (TRANSLATIONS[currentLang][key] !== undefined) {
+                        el.textContent = TRANSLATIONS[currentLang][key];
+                    }
+                });
+
+                document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+                    const key = el.getAttribute("data-i18n-html");
+                    if (TRANSLATIONS[currentLang][key] !== undefined) {
+                        el.innerHTML = TRANSLATIONS[currentLang][key];
+                    }
+                });
+
+                document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+                    const key = el.getAttribute("data-i18n-placeholder");
+                    if (TRANSLATIONS[currentLang][key] !== undefined) {
+                        el.placeholder = TRANSLATIONS[currentLang][key];
+                    }
+                });
+
+                const yearEl = document.getElementById("year");
+                if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+                updatePreview();
+                renderReports();
+            }
+
+            function updatePreview() {
+                if (!previewEl) return;
+                const author = (document.getElementById("ticketAuthor")?.value || "").trim() || t("anon_user");
+                const category = document.getElementById("ticketCategory")?.value || "Баг в игре";
+                const version = (document.getElementById("bugVersion")?.value || "0.1").trim();
+                const platform = document.getElementById("bugPlatform")?.value || "ПК (Windows)";
+                const what = (document.getElementById("bugWhatHappened")?.value || "").trim() || "...";
+                const steps = (document.getElementById("bugSteps")?.value || "").trim();
+
+                let text = `[${category}] v${version} · ${platform}\nAuthor: ${author}\n\n${what}`;
+                if (steps) {
+                    text += `\n\n${t("steps_prefix")}${steps}`;
+                }
+                previewEl.textContent = text;
+            }
+
+            ["ticketAuthor", "ticketCategory", "bugVersion", "bugPlatform", "bugWhatHappened", "bugSteps"].forEach((id) => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener("input", updatePreview);
+                if (el) el.addEventListener("change", updatePreview);
+            });
+
+            function getLocalReports() {
+                try {
+                    return JSON.parse(localStorage.getItem("darecraft_community_reports") || "[]");
+                } catch (_) {
+                    return [];
+                }
+            }
+
+            function saveLocalReports(list) {
+                localStorage.setItem("darecraft_community_reports", JSON.stringify(list));
+            }
+
+            function escapeHtml(str) {
+                return String(str || "")
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;");
+            }
+
+            function formatDate(iso) {
+                if (!iso) return "";
+                try {
+                    const d = new Date(iso);
+                    return d.toLocaleDateString(currentLang === "en" ? "en-US" : currentLang === "uk" ? "uk-UA" : "ru-RU", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    });
+                } catch (_) {
+                    return "";
+                }
+            }
+
+            function renderReports() {
+                if (!communityGrid) return;
+                if (countAllEl) countAllEl.textContent = String(allReports.length);
+                if (badgeEl) {
+                    const nextNum = String(allReports.length + 1).padStart(3, "0");
+                    badgeEl.textContent = `#DC-${nextNum}`;
+                }
+
+                const filtered = activeFilter === "all"
+                    ? allReports
+                    : allReports.filter((item) => item.category === activeFilter);
+
+                if (!filtered.length) {
+                    communityGrid.innerHTML = `<div class="community-empty">${escapeHtml(t("empty_list"))}</div>`;
+                    return;
+                }
+
+                communityGrid.innerHTML = filtered.map((item, idx) => {
+                    const isIdea = item.category === "Предложение / Идея";
+                    const author = escapeHtml(item.author || t("anon_user"));
+                    const version = escapeHtml(item.version || "0.1");
+                    const platform = escapeHtml(item.platform || "");
+                    const category = escapeHtml(item.category || "Баг в игре");
+                    const description = escapeHtml(item.description || "");
+                    const steps = escapeHtml(item.steps || "");
+                    const dateStr = formatDate(item.created_at);
+                    const ticketNum = item.id ? `#DC-${String(item.id).padStart(3, "0")}` : `#DC-${String(filtered.length - idx).padStart(3, "0")}`;
+
+                    return `
+                        <article class="community-card">
+                            <div class="community-card-top">
+                                <span class="community-tag ${isIdea ? "is-idea" : ""}">${category}</span>
+                                <span class="community-meta">${ticketNum} · v${version} · ${platform}</span>
+                            </div>
+                            <div class="community-text">${description}</div>
+                            ${steps ? `<div class="community-steps"><strong>${escapeHtml(t("steps_prefix"))}</strong>${steps}</div>` : ""}
+                            <div class="community-meta">${author}${dateStr ? " · " + dateStr : ""}</div>
+                        </article>
+                    `;
+                }).join("");
+            }
+
+            async function loadReports() {
+                if (communityGrid) {
+                    communityGrid.innerHTML = `<div class="community-empty">${escapeHtml(t("loading_list"))}</div>`;
+                }
+
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from(TABLE_NAME)
+                        .select("*")
+                        .order("created_at", { ascending: false })
+                        .limit(100);
+
+                    if (!error && Array.isArray(data)) {
+                        allReports = data;
+                        renderReports();
+                        return;
+                    }
+                }
+
+                allReports = getLocalReports();
+                renderReports();
+            }
+
+            if (form) {
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const submitBtn = document.getElementById("submitReportBtn");
+                    const author = (document.getElementById("ticketAuthor")?.value || "").trim() || t("anon_user");
+                    const category = document.getElementById("ticketCategory")?.value || "Баг в игре";
+                    const version = (document.getElementById("bugVersion")?.value || "0.1").trim();
+                    const platform = document.getElementById("bugPlatform")?.value || "ПК (Windows)";
+                    const description = (document.getElementById("bugWhatHappened")?.value || "").trim();
+                    const steps = (document.getElementById("bugSteps")?.value || "").trim();
+
+                    if (!description) return;
+
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = t("btn_sending");
+                    }
+
+                    const payload = {
+                        author,
+                        category,
+                        version,
+                        platform,
+                        description,
+                        steps
+                    };
+
+                    let savedToCloud = false;
+                    if (supabaseClient) {
+                        const { data, error } = await supabaseClient
+                            .from(TABLE_NAME)
+                            .insert([payload])
+                            .select();
+
+                        if (!error && data && data[0]) {
+                            savedToCloud = true;
+                            allReports.unshift(data[0]);
+                        }
+                    }
+
+                    if (!savedToCloud) {
+                        const localItem = {
+                            ...payload,
+                            id: allReports.length + 1,
+                            created_at: new Date().toISOString()
+                        };
+                        const localList = getLocalReports();
+                        localList.unshift(localItem);
+                        saveLocalReports(localList);
+                        allReports = localList;
+                    }
+
+                    renderReports();
+                    form.reset();
+                    document.getElementById("bugVersion").value = "0.1";
+                    updatePreview();
+
+                    if (feedbackEl) {
+                        feedbackEl.textContent = savedToCloud ? t("sent_success") : `${t("sent_success")} (${t("sent_local_warn")})`;
+                    }
+
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = t("btn_submit");
+                    }
+                });
+            }
+
+            document.querySelectorAll(".pill-btn").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    document.querySelectorAll(".pill-btn").forEach((b) => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    activeFilter = btn.dataset.filter || "all";
+                    renderReports();
+                });
+            });
+
+            const fillSampleBtn = document.getElementById("fillSampleBtn");
+            if (fillSampleBtn) {
+                fillSampleBtn.addEventListener("click", () => {
+                    document.getElementById("ticketAuthor").value = "Danyil";
+                    document.getElementById("ticketCategory").value = "Баг в игре";
+                    document.getElementById("bugVersion").value = "0.1";
+                    document.getElementById("bugPlatform").value = "ПК (Windows)";
+                    document.getElementById("bugWhatHappened").value = t("ph_what").replace(/^[^:]+:\s*/, "");
+                    document.getElementById("bugSteps").value = t("ph_steps").replace(/^[^:]+:\s*/, "");
+                    updatePreview();
+                });
+            }
+
+            const downloadReportBtn = document.getElementById("downloadReportBtn");
+            if (downloadReportBtn) {
+                downloadReportBtn.addEventListener("click", () => {
+                    updatePreview();
+                    const blob = new Blob([previewEl.textContent], { type: "text/plain;charset=utf-8" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "DareCraft-report.txt";
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+            }
+
+            if (langSelect) {
+                langSelect.addEventListener("change", (e) => {
+                    applyLanguage(e.target.value);
+                });
+            }
+
+            const savedLang = localStorage.getItem("darecraft_lang");
+            const browserLang = (navigator.language || "").toLowerCase();
+            const initialLang =
+                savedLang || (browserLang.startsWith("ru") ? "ru" : browserLang.startsWith("en") ? "en" : "uk");
+
+            applyLanguage(initialLang);
+            loadReports();
+        })();
+    </script>
 </body>
 </html>
