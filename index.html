@@ -43,66 +43,6 @@
                 width: fit-content;
             }
         }
-        .community-card {
-            background: #18181d;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .community-card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .community-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 4px;
-            background: rgba(230, 57, 70, 0.16);
-            color: #ff6b6b;
-            border: 1px solid rgba(230, 57, 70, 0.35);
-        }
-        .community-tag.is-idea {
-            background: rgba(0, 120, 215, 0.16);
-            color: #5cb3ff;
-            border-color: rgba(0, 120, 215, 0.35);
-        }
-        .community-meta {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-        .community-text {
-            color: #f3f4f6;
-            font-size: 14px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-        .community-steps {
-            font-size: 13px;
-            color: #9ca3af;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 8px 10px;
-            border-radius: 6px;
-            border-left: 2px solid #0078d7;
-            white-space: pre-wrap;
-        }
-        .community-empty {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 32px;
-            color: #9ca3af;
-            background: #18181d;
-            border-radius: 10px;
-            border: 1px dashed rgba(255, 255, 255, 0.12);
-        }
     </style>
 </head>
 <body>
@@ -255,17 +195,17 @@
             <div class="faq-list">
                 <article class="faq-item">
                     <h3 data-i18n="faq_1_q">Как правильно запустить скачанную игру DareCraft?</h3>
-                    <p data-i18n="faq_1_a">После скачивания архива с игрой обязательно распакуйте его в отдельную папку и запускайте игру из распакованной папки, а не прямо внутри архива.</p>
+                    <p data-i18n="faq_1_a">После скачивания архива с грою обязательно распакуйте его в отдельную папку и запускайте игру из распакованной папки, а не прямо внутри архива.</p>
                 </article>
 
                 <article class="faq-item">
                     <h3 data-i18n="faq_2_q">Что делать, если я нашёл баг в версии 0.1?</h3>
-                    <p data-i18n-html="faq_2_a">Опишите, что именно произошло и на каком устройстве (ПК или телефон), нажмите <strong>«Отправить»</strong> — отчёт появится в общем списке багов пользователей и поможет исправить ошибку в следующем обновлении.</p>
+                    <p data-i18n-html="faq_2_a">Опишите, что именно произошло и на каком устройстве (ПК или телефон), нажмите <strong>«Отправить»</strong> — отчёт появится в общем списке багів пользователей и допоможе виправити помилку в наступному оновленні.</p>
                 </article>
 
                 <article class="faq-item">
                     <h3 data-i18n="faq_3_q">Можно ли предложить свою идею для DareCraft?</h3>
-                    <p data-i18n-html="faq_3_a">Да! Выберите в форме выше тип обращения <strong>«Предложение / Идея»</strong>, опишите новую механику, блок или структуру и отправьте её в общую ленту.</p>
+                    <p data-i18n-html="faq_3_a">Да! Выберите в форме выше тип обращения <strong>«Предложение / Идея»</strong>, опишите новую механику, блок або структуру та надішліть її у загальну стрічку.</p>
                 </article>
             </div>
         </section>
@@ -280,21 +220,6 @@
     <script src="script.js"></script>
     <script>
         (function () {
-            // ==========================================
-            // 1. НАСТРОЙКИ SUPABASE
-            // ==========================================
-            const SUPABASE_URL = "https://yodtlxkxtynvwcnkenhh.supabase.co";
-            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvZHRseGt4dHludndjbmtlbmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNDA2MzcsImV4cCI6MjExMDkxNjYzN30.kKG6hbU2hqgCl8iJVg0MDy8mdER5GiIFx6TlDw2r4FA";
-            const TABLE_NAME = "bug_reports";
-
-            let supabaseClient = null;
-            if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            }
-
-            // ==========================================
-            // 2. ПЕРЕВОДЫ (UK / EN / RU)
-            // ==========================================
             const TRANSLATIONS = {
                 uk: {
                     page_title: "DareCraft підтримка — DARENACHEK studio",
@@ -328,7 +253,6 @@
                     label_steps: "Як повторити (якщо це баг)",
                     ph_steps: "Наприклад: Просто зайти у світ",
                     btn_submit: "НАДІСЛАТИ",
-                    btn_sending: "НАДСИЛАННЯ...",
                     btn_txt: "ЗАВАНТАЖИТИ .TXT",
                     btn_sample: "ПРИКЛАД",
                     preview_tag: "ПОПЕРЕДНІЙ ПЕРЕГЛЯД",
@@ -350,13 +274,7 @@
                     faq_3_q: "Чи можна запропонувати свою ідею для DareCraft?",
                     faq_3_a: "Так! Виберіть у формі вище тип звернення <strong>«Пропозиція / Ідея»</strong>, опишіть нову механіку, блок або структуру та надішліть її у загальну стрічку.",
                     footer_copy: "© <span id=\"year\"></span> DARENACHEK studio. DareCraft підтримка.",
-                    footer_site: "САЙТ DARECRAFT ↗",
-                    anon_user: "Гравець",
-                    steps_prefix: "Кроки: ",
-                    empty_list: "Поки що немає звернень у цій категорії. Будьте першим!",
-                    loading_list: "Завантаження звернень...",
-                    sent_success: "Дякуємо! Ваше звернення опубліковано у загальному списку.",
-                    sent_local_warn: "Збережено локально у браузері (не вдалося підключитися до бази)."
+                    footer_site: "САЙТ DARECRAFT ↗"
                 },
                 en: {
                     page_title: "DareCraft Support — DARENACHEK studio",
@@ -390,7 +308,6 @@
                     label_steps: "How to reproduce (if it's a bug)",
                     ph_steps: "Example: Just load into a world",
                     btn_submit: "SUBMIT",
-                    btn_sending: "SUBMITTING...",
                     btn_txt: "DOWNLOAD .TXT",
                     btn_sample: "EXAMPLE",
                     preview_tag: "PREVIEW",
@@ -412,13 +329,7 @@
                     faq_3_q: "Can I suggest my own idea for DareCraft?",
                     faq_3_a: "Yes! Select <strong>«Suggestion / Idea»</strong> as the report type above, describe your new mechanic, block, or structure, and submit it to the public feed.",
                     footer_copy: "© <span id=\"year\"></span> DARENACHEK studio. DareCraft Support.",
-                    footer_site: "DARECRAFT SITE ↗",
-                    anon_user: "Player",
-                    steps_prefix: "Steps: ",
-                    empty_list: "No reports in this category yet. Be the first to submit one!",
-                    loading_list: "Loading reports...",
-                    sent_success: "Thank you! Your report has been published to the public list.",
-                    sent_local_warn: "Saved locally in your browser (could not reach the database)."
+                    footer_site: "DARECRAFT SITE ↗"
                 },
                 ru: {
                     page_title: "DareCraft поддержка — DARENACHEK studio",
@@ -452,7 +363,6 @@
                     label_steps: "Как повторить (если это баг)",
                     ph_steps: "Например: Просто зайти в мир",
                     btn_submit: "ОТПРАВИТЬ",
-                    btn_sending: "ОТПРАВКА...",
                     btn_txt: "СКАЧАТЬ .TXT",
                     btn_sample: "ПРИМЕР",
                     preview_tag: "ПРЕДПРОСМОТР",
@@ -474,294 +384,44 @@
                     faq_3_q: "Можно ли предложить свою идею для DareCraft?",
                     faq_3_a: "Да! Выберите в форме выше тип обращения <strong>«Предложение / Идея»</strong>, опишите новую механику, блок или структуру и отправьте её в общую ленту.",
                     footer_copy: "© <span id=\"year\"></span> DARENACHEK studio. DareCraft поддержка.",
-                    footer_site: "САЙТ DARECRAFT ↗",
-                    anon_user: "Игрок",
-                    steps_prefix: "Как повторить: ",
-                    empty_list: "Пока нет обращений в этой категории. Будьте первым!",
-                    loading_list: "Загрузка обращений...",
-                    sent_success: "Спасибо! Ваше обращение опубликовано в общем списке.",
-                    sent_local_warn: "Сохранено локально в браузере (не удалось подключиться до базы)."
+                    footer_site: "САЙТ DARECRAFT ↗"
                 }
             };
 
-            let currentLang = "uk";
-            let allReports = [];
-            let activeFilter = "all";
-
             const langSelect = document.getElementById("lang-select");
             const metaDesc = document.querySelector('meta[name="description"]');
-            const communityGrid = document.getElementById("communityGrid");
-            const countAllEl = document.getElementById("countAll");
-            const form = document.getElementById("supportReportForm");
-            const feedbackEl = document.getElementById("supportFeedback");
-            const previewEl = document.getElementById("reportPreview");
-            const badgeEl = document.getElementById("ticketIdBadge");
-
-            function t(key) {
-                return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS.ru[key] || key;
-            }
 
             function applyLanguage(lang) {
-                currentLang = TRANSLATIONS[lang] ? lang : "uk";
-                localStorage.setItem("darecraft_lang", currentLang);
-                document.documentElement.lang = currentLang;
-                document.title = t("page_title");
-                if (langSelect) langSelect.value = currentLang;
-                if (metaDesc) metaDesc.setAttribute("content", t("meta_desc"));
+                const safeLang = TRANSLATIONS[lang] ? lang : "uk";
+                localStorage.setItem("darecraft_lang", safeLang);
+                document.documentElement.lang = safeLang;
+                document.title = TRANSLATIONS[safeLang].page_title;
+                if (langSelect) langSelect.value = safeLang;
+                if (metaDesc) metaDesc.setAttribute("content", TRANSLATIONS[safeLang].meta_desc);
 
                 document.querySelectorAll("[data-i18n]").forEach((el) => {
                     const key = el.getAttribute("data-i18n");
-                    if (TRANSLATIONS[currentLang][key] !== undefined) {
-                        el.textContent = TRANSLATIONS[currentLang][key];
+                    if (TRANSLATIONS[safeLang][key] !== undefined) {
+                        el.textContent = TRANSLATIONS[safeLang][key];
                     }
                 });
 
                 document.querySelectorAll("[data-i18n-html]").forEach((el) => {
                     const key = el.getAttribute("data-i18n-html");
-                    if (TRANSLATIONS[currentLang][key] !== undefined) {
-                        el.innerHTML = TRANSLATIONS[currentLang][key];
+                    if (TRANSLATIONS[safeLang][key] !== undefined) {
+                        el.innerHTML = TRANSLATIONS[safeLang][key];
                     }
                 });
 
                 document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
                     const key = el.getAttribute("data-i18n-placeholder");
-                    if (TRANSLATIONS[currentLang][key] !== undefined) {
-                        el.placeholder = TRANSLATIONS[currentLang][key];
+                    if (TRANSLATIONS[safeLang][key] !== undefined) {
+                        el.placeholder = TRANSLATIONS[safeLang][key];
                     }
                 });
 
                 const yearEl = document.getElementById("year");
-                if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-                updatePreview();
-                renderReports();
-            }
-
-            function updatePreview() {
-                if (!previewEl) return;
-                const author = (document.getElementById("ticketAuthor")?.value || "").trim() || t("anon_user");
-                const category = document.getElementById("ticketCategory")?.value || "Баг в игре";
-                const version = (document.getElementById("bugVersion")?.value || "0.1").trim();
-                const platform = document.getElementById("bugPlatform")?.value || "ПК (Windows)";
-                const what = (document.getElementById("bugWhatHappened")?.value || "").trim() || "...";
-                const steps = (document.getElementById("bugSteps")?.value || "").trim();
-
-                let text = `[${category}] v${version} · ${platform}\nAuthor: ${author}\n\n${what}`;
-                if (steps) {
-                    text += `\n\n${t("steps_prefix")}${steps}`;
-                }
-                previewEl.textContent = text;
-            }
-
-            ["ticketAuthor", "ticketCategory", "bugVersion", "bugPlatform", "bugWhatHappened", "bugSteps"].forEach((id) => {
-                const el = document.getElementById(id);
-                if (el) el.addEventListener("input", updatePreview);
-                if (el) el.addEventListener("change", updatePreview);
-            });
-
-            function getLocalReports() {
-                try {
-                    return JSON.parse(localStorage.getItem("darecraft_community_reports") || "[]");
-                } catch (_) {
-                    return [];
-                }
-            }
-
-            function saveLocalReports(list) {
-                localStorage.setItem("darecraft_community_reports", JSON.stringify(list));
-            }
-
-            function escapeHtml(str) {
-                return String(str || "")
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;");
-            }
-
-            function formatDate(iso) {
-                if (!iso) return "";
-                try {
-                    const d = new Date(iso);
-                    return d.toLocaleDateString(currentLang === "en" ? "en-US" : currentLang === "uk" ? "uk-UA" : "ru-RU", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit"
-                    });
-                } catch (_) {
-                    return "";
-                }
-            }
-
-            function renderReports() {
-                if (!communityGrid) return;
-                if (countAllEl) countAllEl.textContent = String(allReports.length);
-                if (badgeEl) {
-                    const nextNum = String(allReports.length + 1).padStart(3, "0");
-                    badgeEl.textContent = `#DC-${nextNum}`;
-                }
-
-                const filtered = activeFilter === "all"
-                    ? allReports
-                    : allReports.filter((item) => item.category === activeFilter);
-
-                if (!filtered.length) {
-                    communityGrid.innerHTML = `<div class="community-empty">${escapeHtml(t("empty_list"))}</div>`;
-                    return;
-                }
-
-                communityGrid.innerHTML = filtered.map((item, idx) => {
-                    const isIdea = item.category === "Предложение / Идея";
-                    const author = escapeHtml(item.author || t("anon_user"));
-                    const version = escapeHtml(item.version || "0.1");
-                    const platform = escapeHtml(item.platform || "");
-                    const category = escapeHtml(item.category || "Баг в игре");
-                    const description = escapeHtml(item.description || "");
-                    const steps = escapeHtml(item.steps || "");
-                    const dateStr = formatDate(item.created_at);
-                    const ticketNum = item.id ? `#DC-${String(item.id).padStart(3, "0")}` : `#DC-${String(filtered.length - idx).padStart(3, "0")}`;
-
-                    return `
-                        <article class="community-card">
-                            <div class="community-card-top">
-                                <span class="community-tag ${isIdea ? "is-idea" : ""}">${category}</span>
-                                <span class="community-meta">${ticketNum} · v${version} · ${platform}</span>
-                            </div>
-                            <div class="community-text">${description}</div>
-                            ${steps ? `<div class="community-steps"><strong>${escapeHtml(t("steps_prefix"))}</strong>${steps}</div>` : ""}
-                            <div class="community-meta">${author}${dateStr ? " · " + dateStr : ""}</div>
-                        </article>
-                    `;
-                }).join("");
-            }
-
-            async function loadReports() {
-                if (communityGrid) {
-                    communityGrid.innerHTML = `<div class="community-empty">${escapeHtml(t("loading_list"))}</div>`;
-                }
-
-                if (supabaseClient) {
-                    const { data, error } = await supabaseClient
-                        .from(TABLE_NAME)
-                        .select("*")
-                        .order("created_at", { ascending: false })
-                        .limit(100);
-
-                    if (!error && Array.isArray(data)) {
-                        allReports = data;
-                        renderReports();
-                        return;
-                    }
-                }
-
-                allReports = getLocalReports();
-                renderReports();
-            }
-
-            if (form) {
-                form.addEventListener("submit", async (e) => {
-                    e.preventDefault();
-                    const submitBtn = document.getElementById("submitReportBtn");
-                    const author = (document.getElementById("ticketAuthor")?.value || "").trim() || t("anon_user");
-                    const category = document.getElementById("ticketCategory")?.value || "Баг в игре";
-                    const version = (document.getElementById("bugVersion")?.value || "0.1").trim();
-                    const platform = document.getElementById("bugPlatform")?.value || "ПК (Windows)";
-                    const description = (document.getElementById("bugWhatHappened")?.value || "").trim();
-                    const steps = (document.getElementById("bugSteps")?.value || "").trim();
-
-                    if (!description) return;
-
-                    if (submitBtn) {
-                        submitBtn.disabled = true;
-                        submitBtn.textContent = t("btn_sending");
-                    }
-
-                    const payload = {
-                        author,
-                        category,
-                        version,
-                        platform,
-                        description,
-                        steps
-                    };
-
-                    let savedToCloud = false;
-                    if (supabaseClient) {
-                        const { data, error } = await supabaseClient
-                            .from(TABLE_NAME)
-                            .insert([payload])
-                            .select();
-
-                        if (!error && data && data[0]) {
-                            savedToCloud = true;
-                            allReports.unshift(data[0]);
-                        }
-                    }
-
-                    if (!savedToCloud) {
-                        const localItem = {
-                            ...payload,
-                            id: allReports.length + 1,
-                            created_at: new Date().toISOString()
-                        };
-                        const localList = getLocalReports();
-                        localList.unshift(localItem);
-                        saveLocalReports(localList);
-                        allReports = localList;
-                    }
-
-                    renderReports();
-                    form.reset();
-                    document.getElementById("bugVersion").value = "0.1";
-                    updatePreview();
-
-                    if (feedbackEl) {
-                        feedbackEl.textContent = savedToCloud ? t("sent_success") : `${t("sent_success")} (${t("sent_local_warn")})`;
-                    }
-
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = t("btn_submit");
-                    }
-                });
-            }
-
-            document.querySelectorAll(".pill-btn").forEach((btn) => {
-                btn.addEventListener("click", () => {
-                    document.querySelectorAll(".pill-btn").forEach((b) => b.classList.remove("active"));
-                    btn.classList.add("active");
-                    activeFilter = btn.dataset.filter || "all";
-                    renderReports();
-                });
-            });
-
-            const fillSampleBtn = document.getElementById("fillSampleBtn");
-            if (fillSampleBtn) {
-                fillSampleBtn.addEventListener("click", () => {
-                    document.getElementById("ticketAuthor").value = "Danyil";
-                    document.getElementById("ticketCategory").value = "Баг в игре";
-                    document.getElementById("bugVersion").value = "0.1";
-                    document.getElementById("bugPlatform").value = "ПК (Windows)";
-                    document.getElementById("bugWhatHappened").value = t("ph_what").replace(/^[^:]+:\s*/, "");
-                    document.getElementById("bugSteps").value = t("ph_steps").replace(/^[^:]+:\s*/, "");
-                    updatePreview();
-                });
-            }
-
-            const downloadReportBtn = document.getElementById("downloadReportBtn");
-            if (downloadReportBtn) {
-                downloadReportBtn.addEventListener("click", () => {
-                    updatePreview();
-                    const blob = new Blob([previewEl.textContent], { type: "text/plain;charset=utf-8" });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = "DareCraft-report.txt";
-                    a.click();
-                    URL.revokeObjectURL(url);
-                });
+                if (yearEl) yearEl.textContent = String(new Date().getFullYear());
             }
 
             if (langSelect) {
@@ -776,8 +436,10 @@
                 savedLang || (browserLang.startsWith("ru") ? "ru" : browserLang.startsWith("en") ? "en" : "uk");
 
             applyLanguage(initialLang);
-            loadReports();
         })();
     </script>
 </body>
 </html>
+```[cite: 18, 19]
+
+Загрузи этот `index.html` вместе с обновлённым `script.js` в репозиторий `DareCraft-support-sit`, обнови страницу через `Ctrl + F5` и проверь работу — если `HTTP 401` останется, скинь ключ `anon` `public` из вкладки `API Keys (Legacy)` в Supabase[cite: 18].

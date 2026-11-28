@@ -1,5 +1,6 @@
 const SUPABASE_URL = "https://yodtlxkxtynvwcnkenhh.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvZHRseGt4dHludndjbmtlbmhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNDA2MzcsImV4cCI6MjExMDkxNjYzN30.kKG6hbU2hqgCl8iJVg0MDy8mdER5GiIFx6TlDw2r4FA";
+const TABLE_NAME = "reports";
 
 document.addEventListener("DOMContentLoaded", () => {
     const yearEl = document.getElementById("year");
@@ -77,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let reports = [];
     let currentFilter = "all";
-    let activeModalReportId = null;
 
     const form = document.getElementById("supportReportForm");
     const submitBtn = document.getElementById("submitReportBtn");
@@ -93,33 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const downloadReportBtn = document.getElementById("downloadReportBtn");
     const ticketIdBadge = document.getElementById("ticketIdBadge");
     const communityGrid = document.getElementById("communityGrid");
-    const communitySection = document.getElementById("community-bugs");
     const countAllEl = document.getElementById("countAll");
     const filterButtons = Array.from(document.querySelectorAll(".pill-btn"));
-    const storageModeNote = document.getElementById("storageModeNote");
-
-    const reportModal = document.getElementById("reportModal");
-    const modalClose = document.getElementById("modalClose");
-    const modalCode = document.getElementById("modalCode");
-    const modalStatus = document.getElementById("modalStatus");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalAuthor = document.getElementById("modalAuthor");
-    const modalVersion = document.getElementById("modalVersion");
-    const modalPlatform = document.getElementById("modalPlatform");
-    const modalDate = document.getElementById("modalDate");
-    const modalDescription = document.getElementById("modalDescription");
-    const modalStepsBlock = document.getElementById("modalStepsBlock");
-    const modalSteps = document.getElementById("modalSteps");
-    const modalCopyBtn = document.getElementById("modalCopyBtn");
-    const modalVoteBtn = document.getElementById("modalVoteBtn");
-    const modalVotesCount = document.getElementById("modalVotesCount");
-    const modalFeedback = document.getElementById("modalFeedback");
-
-    if (storageModeNote) {
-        storageModeNote.textContent = hasSupabase
-            ? "Подключена общая база Supabase: отчёты видны всем пользователям со всех устройств."
-            : "Сейчас работает локальный режим браузера. Укажите SUPABASE_ANON_KEY в script.js, чтобы жалобы видели все игроки.";
-    }
 
     const generateCode = () => `DC-${Math.floor(100 + Math.random() * 900)}`;
     let nextTicketCode = generateCode();
@@ -179,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const fetchReportsFromSupabase = async () => {
         const baseUrl = SUPABASE_URL.trim().replace(/\/+$/, "");
-        const res = await fetch(`${baseUrl}/rest/v1/reports?select=*&order=created_at.desc`, {
+        const res = await fetch(`${baseUrl}/rest/v1/${TABLE_NAME}?select=*&order=created_at.desc`, {
             headers: sbHeaders()
         });
         if (!res.ok) {
@@ -191,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const insertReportToSupabase = async (reportObj) => {
         const baseUrl = SUPABASE_URL.trim().replace(/\/+$/, "");
-        const res = await fetch(`${baseUrl}/rest/v1/reports`, {
+        const res = await fetch(`${baseUrl}/rest/v1/${TABLE_NAME}`, {
             method: "POST",
             headers: {
                 ...sbHeaders(),
@@ -218,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const updateVotesInSupabase = async (id, nextVotes) => {
         const baseUrl = SUPABASE_URL.trim().replace(/\/+$/, "");
-        const res = await fetch(`${baseUrl}/rest/v1/reports?id=eq.${encodeURIComponent(id)}`, {
+        const res = await fetch(`${baseUrl}/rest/v1/${TABLE_NAME}?id=eq.${encodeURIComponent(id)}`, {
             method: "PATCH",
             headers: {
                 ...sbHeaders(),
@@ -245,102 +220,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 await updateVotesInSupabase(item.id, nextVotes);
             } catch {}
         }
-
         renderCommunityReports();
-        if (activeModalReportId === item.id) {
-            openReportModal(item.id);
-        }
     };
-
-    const formatFullReportForCopy = (item) => [
-        `DareCraft поддержка [#${item.id}]`,
-        `Статус: ${item.status || "Новое обращение"}`,
-        `Тип: ${item.category}`,
-        `Автор: ${item.author}`,
-        `Версия: v${item.version}`,
-        `Устройство: ${item.platform}`,
-        `Дата: ${formatDate(item.created_at)}`,
-        `Описание: ${item.description}`,
-        `Как повторить: ${item.steps || "Не указано"}`,
-        `Подтверждений: ${Number(item.votes) || 1}`
-    ].join("\n");
-
-    const openReportModal = (reportId) => {
-        const item = reports.find((r) => r.id === reportId);
-        if (!item || !reportModal) return;
-
-        activeModalReportId = item.id;
-        if (modalCode) modalCode.textContent = `#${item.id} · ${item.category}`;
-        if (modalStatus) modalStatus.textContent = item.status || "Новое обращение";
-        if (modalTitle) modalTitle.textContent = `Обращение #${item.id} от ${item.author}`;
-        if (modalAuthor) modalAuthor.textContent = item.author;
-        if (modalVersion) modalVersion.textContent = `v${item.version}`;
-        if (modalPlatform) modalPlatform.textContent = item.platform;
-        if (modalDate) modalDate.textContent = formatDate(item.created_at);
-        if (modalDescription) modalDescription.textContent = item.description;
-
-        if (modalStepsBlock && modalSteps) {
-            if (item.steps && item.steps.trim()) {
-                modalStepsBlock.style.display = "flex";
-                modalSteps.textContent = item.steps;
-            } else {
-                modalStepsBlock.style.display = "none";
-            }
-        }
-
-        if (modalVotesCount) {
-            modalVotesCount.textContent = String(Number(item.votes) || 1);
-        }
-        if (modalVoteBtn) {
-            modalVoteBtn.classList.toggle("is-voted", votedIds.has(item.id));
-        }
-        if (modalFeedback) {
-            modalFeedback.textContent = "";
-        }
-
-        reportModal.classList.add("is-open");
-        reportModal.setAttribute("aria-hidden", "false");
-    };
-
-    const closeReportModal = () => {
-        if (!reportModal) return;
-        reportModal.classList.remove("is-open");
-        reportModal.setAttribute("aria-hidden", "true");
-        activeModalReportId = null;
-    };
-
-    modalClose?.addEventListener("click", closeReportModal);
-    reportModal?.addEventListener("click", (e) => {
-        if (e.target === reportModal) {
-            closeReportModal();
-        }
-    });
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            closeReportModal();
-        }
-    });
-
-    modalVoteBtn?.addEventListener("click", () => {
-        if (!activeModalReportId) return;
-        const item = reports.find((r) => r.id === activeModalReportId);
-        if (item) {
-            handleUpvote(item);
-        }
-    });
-
-    modalCopyBtn?.addEventListener("click", async () => {
-        if (!activeModalReportId) return;
-        const item = reports.find((r) => r.id === activeModalReportId);
-        if (!item) return;
-        const text = formatFullReportForCopy(item);
-        try {
-            await navigator.clipboard.writeText(text);
-            if (modalFeedback) modalFeedback.textContent = "Текст жалобы скопирован в буфер обмена!";
-        } catch {
-            if (modalFeedback) modalFeedback.textContent = "Не удалось скопировать автоматически — выделите текст вручную.";
-        }
-    });
 
     const renderCommunityReports = () => {
         if (!communityGrid) return;
@@ -381,21 +262,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
                 <p class="bug-card-title">${escapeHtml(item.description)}</p>
                 ${stepsBlock}
-                <div class="bug-card-actions-row">
-                    <button type="button" class="details-link-btn">Подробнее →</button>
-                </div>
                 <div class="bug-card-footer">
-                    <span>${escapeHtml(item.author)} · v${escapeHtml(item.version)} · ${escapeHtml(item.platform)}</span>
+                    <span>${escapeHtml(item.author)} · v${escapeHtml(item.version)} · ${escapeHtml(item.platform)} · ${formatDate(item.created_at)}</span>
                     <button type="button" class="upvote-btn${isVoted ? " is-voted" : ""}" aria-label="Подтвердить">
                         ▲ <span>${Number(item.votes) || 1}</span>
                     </button>
                 </div>
             `;
-
-            card.addEventListener("click", (e) => {
-                if (e.target.closest(".upvote-btn")) return;
-                openReportModal(item.id);
-            });
 
             const voteBtn = card.querySelector(".upvote-btn");
             voteBtn?.addEventListener("click", (e) => {
@@ -498,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
             renderCommunityReports();
 
             if (feedbackEl) {
-                feedbackEl.textContent = `Обращение #${savedItem.id} отправлено! Нажмите на карточку, чтобы открыть подробно.`;
+                feedbackEl.textContent = `Обращение #${savedItem.id} отправлено в общую базу!`;
             }
 
             if (whatInput) whatInput.value = "";
@@ -506,11 +379,9 @@ document.addEventListener("DOMContentLoaded", () => {
             nextTicketCode = generateCode();
             if (ticketIdBadge) ticketIdBadge.textContent = `#${nextTicketCode}`;
             syncPreview();
-
-            communitySection?.scrollIntoView({ behavior: "smooth", block: "start" });
         } catch (err) {
             if (feedbackEl) {
-                feedbackEl.textContent = `Ошибка отправки в Supabase (${err.message}). Проверьте URL, ключ и политики RLS таблицы reports.`;
+                feedbackEl.textContent = `Ошибка отправки в Supabase (${err.message}). Проверьте ключ и политики RLS таблицы reports.`;
             }
         } finally {
             if (submitBtn) submitBtn.disabled = false;
@@ -536,3 +407,9 @@ document.addEventListener("DOMContentLoaded", () => {
     syncPreview();
     initReports();
 });
+```[cite: 18, 20, 22]
+
+### Что сделать дальше
+* Замени содержимое `script.js` в репозитории `DareCraft-support-sit` на код выше[cite: 18].
+* Удали в `index.html` нижний блок `<script>` с `const TABLE_NAME = "bug_reports"`, чтобы он не перезаписывал список обращений[cite: 22].
+* Если ошибка `HTTP 401` всё равно останется, скопируй из вкладки `API Keys (Legacy)` в Supabase строку **`anon` `public`** и скинь сюда — подставлю её в первую строку `SUPABASE_ANON_KEY`[cite: 18].
